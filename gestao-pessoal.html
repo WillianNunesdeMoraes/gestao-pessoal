@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#08080d">
+<title>Gestão Pessoal</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<link href="https://fonts.cdnfonts.com/css/codec-pro" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#08080d;font-family:'Codec Pro','Segoe UI',system-ui,sans-serif;color:#fff;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:0;display:none}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes pulseRed{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.4)}50%{box-shadow:0 0 0 8px rgba(239,68,68,0)}}
+@keyframes slideIn{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:scale(1)}}
+button{font-family:'Codec Pro','Segoe UI',system-ui,sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent;min-height:44px}
+input,select{font-family:'Codec Pro','Segoe UI',system-ui,sans-serif;min-height:44px}
+#bottom-nav{position:fixed;bottom:0;left:0;right:0;height:calc(60px + env(safe-area-inset-bottom,0px));background:#0d0d14;border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:flex-start;z-index:200}
+#bottom-nav button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;color:rgba(255,255,255,.35);font-size:9px;font-weight:700;letter-spacing:1.5px;font-family:inherit;position:relative;transition:color .2s;padding-top:10px;height:60px;min-height:unset}
+#bottom-nav button.active{color:#fff}
+.tab-indicator{position:absolute;top:0;left:15%;right:15%;height:2px;border-radius:0 0 3px 3px;opacity:0;transition:opacity .2s}
+#bottom-nav button.active .tab-indicator{opacity:1}
+.tab-icon{font-size:20px;line-height:1}
+.card{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:16px;margin-bottom:12px}
+.card-label{font-size:10px;color:rgba(255,255,255,.35);font-weight:700;letter-spacing:2px;margin-bottom:12px;display:block}
+.inp{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 16px;color:#fff;font-size:15px;width:100%;outline:none;font-family:inherit;color-scheme:dark;-webkit-appearance:none}
+.inp:focus{border-color:rgba(255,255,255,.25)}
+.inp::placeholder{color:rgba(255,255,255,.2)}
+.btn-primary{background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;border:none;padding:14px;border-radius:12px;font-size:13px;font-weight:700;letter-spacing:2px;width:100%;font-family:inherit;box-shadow:0 0 24px rgba(139,92,246,.25)}
+.btn-danger{background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.25);color:#ef4444;border-radius:10px;width:36px;height:36px;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;min-height:unset}
+.history-item{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:rgba(255,255,255,.03);border-radius:10px;border:1px solid rgba(255,255,255,.05);margin-bottom:7px}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="tab-acucar"></div>
+  <div id="tab-ritalina" style="display:none"></div>
+</div>
+<div id="modal"></div>
+<nav id="bottom-nav">
+  <button id="btn-acucar" class="active" onclick="switchTab('acucar')">
+    <div class="tab-indicator" style="background:linear-gradient(90deg,#f97316,#06b6d4)"></div>
+    <span class="tab-icon">🚫</span>
+    <span>SEM AÇÚCAR</span>
+  </button>
+  <button id="btn-ritalina" onclick="switchTab('ritalina')">
+    <div class="tab-indicator" style="background:linear-gradient(90deg,#8b5cf6,#06b6d4)"></div>
+    <span class="tab-icon">💊</span>
+    <span>RITALINA</span>
+  </button>
+</nav>
+<script>
+// ─── AÇÚCAR — 60 mensagens individuais ────────────────────────────────────────
+const STORAGE_KEY="sf60_v3",TOTAL=60;
+const DAYS_MSGS=[
+{t:"DIA 1 — INÍCIO",m:"Seu corpo percebeu a ausência. Dopamina cai, cérebro pede açúcar. Irritação e dor de cabeça são sinais de desintoxicação neural. Seu fígado começa a processar glicogênio armazenado.",i:"🧠",c:"#f97316"},
+{t:"DIA 2 — ABSTINÊNCIA",m:"Pico da abstinência. Cortisol sobe, humor oscila. O sistema de recompensa do cérebro está em recalibração. Beba muita água — desidratação piora os sintomas.",i:"⚡",c:"#f97316"},
+{t:"DIA 3 — INSULINA",m:"Insulina começa a estabilizar. Seu pâncreas produz menos. Possível fadiga intensa — o corpo está trocando de fonte energética. As bactérias intestinais que se alimentam de açúcar começam a morrer.",i:"🔋",c:"#f97316"},
+{t:"DIA 4 — PAPILAS",m:"Papilas gustativas iniciam renovação. A flora intestinal começa a mudar. Você pode sentir mais fome — coma proteínas e gorduras boas. Níveis de triglicerídeos começam a cair.",i:"🌱",c:"#f97316"},
+{t:"DIA 5 — ENERGIA",m:"Energia ainda instável, mas os picos e crashes desaparecem. O fígado reduz produção de gordura (lipogênese de novo). Sono pode começar a melhorar pela redução do cortisol noturno.",i:"💤",c:"#f97316"},
+{t:"DIA 6 — CETONAS",m:"Cetonas aumentam levemente — seu corpo aprende a queimar gordura. A neblina mental começa a clarear. Hidratação celular melhora sem o efeito osmótico do excesso de glicose.",i:"🔥",c:"#f97316"},
+{t:"DIA 7 — 1 SEMANA",m:"1 semana completa. Estudos mostram que a sensibilidade à insulina já melhora de forma mensurável. Frutas começam a parecer mais doces. O ciclo de dopamina-açúcar está sendo quebrado.",i:"📊",c:"#f97316"},
+{t:"DIA 8 — INFLAMAÇÃO",m:"Inflamação sistêmica começa a cair. Marcadores como IL-6 e TNF-alfa reduzem. Articulações podem doer menos. A pressão arterial começa a ajustar.",i:"🔬",c:"#f97316"},
+{t:"DIA 9 — MICROBIOMA",m:"Microbioma intestinal em transição. Bactérias benéficas (Lactobacillus, Bifidobacterium) começam a dominar sobre as que fermentam açúcar. Menos gases e inchaço.",i:"🦠",c:"#f97316"},
+{t:"DIA 10 — GLICEMIA",m:"Glicemia de jejum mais estável. O pâncreas trabalha menos. Resistência à insulina reduzindo. Energia mais constante ao longo do dia sem necessidade de 'recargas' de açúcar.",i:"📈",c:"#f97316"},
+{t:"DIA 11 — PELE",m:"Pele começa a mudar. A glicação (AGEs) desacelera — o colágeno para de ser degradado pelo açúcar. Menos oleosidade, poros começam a desobstruir.",i:"✨",c:"#f97316"},
+{t:"DIA 12 — FÍGADO",m:"Fígado em recuperação. A gordura hepática começa a reduzir. Enzimas hepáticas (ALT, AST) tendem a normalizar. O fígado fica mais eficiente em processar toxinas.",i:"🫀",c:"#f97316"},
+{t:"DIA 13 — HUMOR",m:"Humor estabilizando. Serotonina se regula sem interferência dos picos de glicose. Menos ansiedade e irritabilidade. O sono REM melhora — sonhos mais vívidos são comuns.",i:"😌",c:"#f97316"},
+{t:"DIA 14 — 2 SEMANAS",m:"2 semanas. Estudos mostram queda de 15-30% no PCR (proteína C-reativa), marcador de inflamação. Sistema cardiovascular sob menos estresse. Frequência cardíaca de repouso pode cair.",i:"🛡️",c:"#f97316"},
+{t:"DIA 15 — PALADAR",m:"Sua sensibilidade ao sabor está recalibrada. Alimentos naturais têm sabor pleno. Um chocolate ao leite pareceria excessivamente doce agora. Isso é neuroplasticidade gustativa.",i:"👅",c:"#f97316"},
+{t:"DIA 16 — ACNE",m:"Glândulas sebáceas normalizam. Acne reduz pela queda da insulina (que estimulava produção de sebo). Pele com textura mais uniforme e menos inflamada.",i:"💅",c:"#f97316"},
+{t:"DIA 17 — MITOCÔNDRIAS",m:"Mitocôndrias se adaptam. A produção de ATP (energia celular) fica mais eficiente usando gordura. Resistência física melhora. Menos fadiga no exercício.",i:"⚡",c:"#f97316"},
+{t:"DIA 18 — IMUNIDADE",m:"Sistema imunológico fortalecendo. Neutrófilos e linfócitos funcionam melhor sem excesso de glicose. Estudos mostram que 75g de açúcar reduzem imunidade por 5 horas — você eliminou isso.",i:"🛡️",c:"#f97316"},
+{t:"DIA 19 — COLESTEROL",m:"Colesterol HDL (bom) tende a subir. LDL denso (prejudicial) começa a cair. O perfil lipídico melhora sem medicação, apenas pela ausência do açúcar.",i:"❤️",c:"#f97316"},
+{t:"DIA 20 — INTESTINO",m:"Intestino mais saudável. A barreira intestinal (tight junctions) se fortalece. Menos permeabilidade intestinal = menos toxinas na corrente sanguínea = menos inflamação sistêmica.",i:"🧬",c:"#f97316"},
+{t:"DIA 21 — 3 SEMANAS",m:"3 semanas. A maioria dos hábitos neurais leva 21 dias para se reconectar. O circuito dopaminérgico já não associa açúcar a recompensa com a mesma intensidade. Você está reprogramado.",i:"🔄",c:"#06b6d4"},
+{t:"DIA 22 — GORDURA",m:"Gordura visceral (abdominal) começa a reduzir de forma mensurável. Esta é a gordura mais perigosa — envolve órgãos e produz citocinas inflamatórias. Ela está indo embora.",i:"🎯",c:"#06b6d4"},
+{t:"DIA 23 — TELÔMEROS",m:"Telômeros agradecem. Estudos associam alto consumo de açúcar ao encurtamento dos telômeros (envelhecimento celular). Sem açúcar, o envelhecimento celular desacelera.",i:"⏰",c:"#06b6d4"},
+{t:"DIA 24 — HbA1c",m:"Hemoglobina glicada (HbA1c) começa a refletir as mudanças. Este marcador mostra a média glicêmica de 2-3 meses. Cada dia sem açúcar melhora esse número.",i:"💉",c:"#06b6d4"},
+{t:"DIA 25 — COGNIÇÃO",m:"Função cognitiva em alta. Hipocampo (memória) funciona melhor sem inflamação. Estudos mostram que alto açúcar reduz BDNF (fator neurotrófico), essencial para aprendizado.",i:"🧠",c:"#06b6d4"},
+{t:"DIA 26 — RINS",m:"Rins sob menos estresse. Sem excesso de glicose para filtrar, a taxa de filtração glomerular normaliza. Menos retenção de líquidos, menos inchaço em mãos e pés.",i:"🫘",c:"#06b6d4"},
+{t:"DIA 27 — HORMÔNIOS",m:"Hormônios se equilibram. Leptina (saciedade) funciona melhor. Grelina (fome) normaliza. Você sente fome real, não compulsão. O corpo sabe quando precisa comer.",i:"⚖️",c:"#06b6d4"},
+{t:"DIA 28 — 4 SEMANAS",m:"4 semanas. Journal of Clinical Endocrinology: gordura hepática cai significativamente. Insulina de jejum reduz. Risco de diabetes tipo 2 cai até 35% em algumas populações.",i:"📖",c:"#06b6d4"},
+{t:"DIA 29 — COLÁGENO",m:"Elastina e colágeno da pele em recuperação. Processo de glicação revertendo. Rugas não desaparecem, mas a degradação parou. Pele mais firme e com melhor turgor.",i:"🌟",c:"#06b6d4"},
+{t:"DIA 30 — 1 MÊS",m:"1 mês completo. Composição corporal mudou: 2-5kg a menos é comum. Mas mais importante que o peso é a redução da gordura visceral e da inflamação crônica.",i:"🏅",c:"#06b6d4"},
+{t:"DIA 31 — DIVERSIDADE",m:"Microbioma diversificado. A comunidade bacteriana intestinal agora é mais rica em espécies benéficas. Isso melhora absorção de nutrientes, imunidade e até produção de serotonina.",i:"🦠",c:"#06b6d4"},
+{t:"DIA 32 — INSULINA",m:"Resistência à insulina reduzida significativamente. Células respondem ao sinal da insulina com eficiência. Glicose entra nas células para energia em vez de ficar circulando no sangue.",i:"💪",c:"#06b6d4"},
+{t:"DIA 33 — VASOS",m:"Vasos sanguíneos mais flexíveis. O endotélio (revestimento dos vasos) se recupera da inflamação crônica causada pelo açúcar. Pressão arterial tende a cair 5-10 mmHg.",i:"🩸",c:"#06b6d4"},
+{t:"DIA 34 — DENTES",m:"Dentes e gengivas agradecem. Sem açúcar, Streptococcus mutans (bactéria da cárie) perde sua fonte de energia. Placa bacteriana reduz. Gengivas menos inflamadas.",i:"🦷",c:"#06b6d4"},
+{t:"DIA 35 — SISTEMA NERVOSO",m:"Sistema nervoso autônomo mais equilibrado. Variabilidade da frequência cardíaca melhora — indicador de resiliência ao estresse. Seu corpo recupera melhor de situações tensas.",i:"🫀",c:"#06b6d4"},
+{t:"DIA 36 — OLHOS",m:"Olhos mais saudáveis. Excesso de glicose danifica os vasos da retina (retinopatia). Sem açúcar, os microvasos oculares se recuperam. Visão pode ficar mais nítida.",i:"👁️",c:"#06b6d4"},
+{t:"DIA 37 — ENERGIA",m:"Energia estável o dia inteiro. Sem crashes das 15h. Sem necessidade de café extra. Mitocôndrias eficientes + glicemia estável = performance mental e física constante.",i:"⚡",c:"#06b6d4"},
+{t:"DIA 38 — CABELO",m:"Cabelo e unhas melhoram. Melhor circulação + menos inflamação = mais nutrientes chegando aos folículos capilares e matriz ungueal. Crescimento mais forte.",i:"💇",c:"#06b6d4"},
+{t:"DIA 39 — RITMO",m:"Eixo HPA (hipotálamo-hipófise-adrenal) normaliza. Cortisol matinal adequado, queda natural à noite. Ritmo circadiano otimizado. Você acorda mais disposto.",i:"🌅",c:"#06b6d4"},
+{t:"DIA 40 — RECOMPENSA",m:"Limiar de recompensa recalibrado. Atividades simples (caminhada, conversa, música) geram satisfação real. Você não precisa mais de estímulos artificiais para sentir prazer.",i:"🎭",c:"#06b6d4"},
+{t:"DIA 41 — OXIDAÇÃO",m:"Marcadores de estresse oxidativo (MDA, 8-OHdG) em queda. Menos radicais livres = menos dano celular = envelhecimento mais lento em nível molecular.",i:"⚗️",c:"#10b981"},
+{t:"DIA 42 — 6 SEMANAS",m:"6 semanas. A adaptação metabólica é profunda. Seu corpo é uma máquina de queimar gordura eficiente. Cetose leve natural pode ocorrer entre refeições — isso é saudável.",i:"🔥",c:"#10b981"},
+{t:"DIA 43 — ARTICULAÇÕES",m:"Articulações mais livres. Ácido úrico tende a normalizar (frutose aumenta ácido úrico). Menos risco de gota. Cartilagem sob menos estresse inflamatório.",i:"🦴",c:"#10b981"},
+{t:"DIA 44 — EMOÇÕES",m:"Sensibilidade emocional equilibrada. Sem as montanhas-russas glicêmicas, suas emoções são mais proporcionais às situações. Menos reatividade, mais clareza nas decisões.",i:"😌",c:"#10b981"},
+{t:"DIA 45 — 45 DIAS",m:"45 dias. Três quartos do caminho. Sua flora intestinal agora é radicalmente diferente de quando começou. Estudos mostram que mudanças no microbioma em 6 semanas são duradouras.",i:"⚖️",c:"#10b981"},
+{t:"DIA 46 — PROTEÍNAS",m:"Proteínas do corpo funcionam melhor. AGEs (produtos de glicação avançada) pararam de se acumular. Enzimas, anticorpos e transportadores celulares operam com mais eficiência.",i:"🧩",c:"#10b981"},
+{t:"DIA 47 — RINS II",m:"Função renal otimizada. TFG estável, menos proteinúria. Os rins filtram o sangue com menos esforço. Hidratação celular ideal sem o efeito diurético do excesso de glicose.",i:"🫁",c:"#10b981"},
+{t:"DIA 48 — NEUROTRANSMISSORES",m:"Neurotransmissores equilibrados. Dopamina, serotonina, GABA — todos em níveis fisiológicos. Sem a interferência dos picos glicêmicos, a bioquímica cerebral é estável.",i:"💊",c:"#10b981"},
+{t:"DIA 49 — 7 SEMANAS",m:"7 semanas. Seu corpo é metabolicamente flexível: usa glicose quando disponível, gordura quando não. Isso é o estado natural do metabolismo humano. Você voltou ao default.",i:"🔄",c:"#10b981"},
+{t:"DIA 50 — MEMÓRIA",m:"Memória e aprendizado aprimorados. BDNF elevado + hipocampo sem inflamação = neuroplasticidade otimizada. Você aprende mais rápido e retém melhor.",i:"📚",c:"#10b981"},
+{t:"DIA 51 — LINFÁTICO",m:"Sistema linfático mais eficiente. Menos inchaço, menos retenção. O sistema que limpa os resíduos celulares funciona melhor sem a carga inflamatória do açúcar.",i:"🫧",c:"#10b981"},
+{t:"DIA 52 — SONO",m:"Qualidade do sono no nível mais alto. Melatonina produzida no horário certo, cortisol baixo à noite, glicemia estável durante o sono. Você acorda descansado de verdade.",i:"😴",c:"#10b981"},
+{t:"DIA 53 — MÚSCULO",m:"Força muscular pode melhorar. Menos inflamação nos tendões e ligamentos. Recuperação pós-exercício mais rápida. Proteínas musculares não estão sendo glicadas.",i:"💪",c:"#10b981"},
+{t:"DIA 54 — PALADAR II",m:"Paladar refinado. Você distingue sabores sutis que antes passavam despercebidos. Um morango é uma explosão de sabor. Seu cérebro reaprende a apreciar comida real.",i:"👅",c:"#10b981"},
+{t:"DIA 55 — RESPIRAÇÃO",m:"Sistema respiratório beneficiado. Menos inflamação nas vias aéreas. Se tinha tendência a congestão nasal ou sibilância, pode estar melhor. Mucosas menos inflamadas.",i:"🌬️",c:"#10b981"},
+{t:"DIA 56 — 8 SEMANAS",m:"8 semanas. Estudo de 2020 (Nutrients): 8 semanas sem açúcar adicionado reduzem significativamente todos os marcadores de síndrome metabólica em adultos.",i:"📊",c:"#10b981"},
+{t:"DIA 57 — DNA",m:"DNA mais protegido. Menos estresse oxidativo = menos mutações. Mecanismos de reparo do DNA funcionam sem sobrecarga. Prevenção de câncer em nível celular.",i:"🧬",c:"#10b981"},
+{t:"DIA 58 — AUTOESTIMA",m:"Autoestima e autoconfiança transformadas. Não pelo espelho — por ter provado a si mesmo que consegue dominar um dos hábitos mais viciantes da alimentação moderna.",i:"🏆",c:"#10b981"},
+{t:"DIA 59 — VÉSPERA",m:"Véspera da vitória. Seu metabolismo, seus órgãos, seu cérebro, sua pele, seu intestino — tudo opera em um nível que a maioria das pessoas nunca experimenta.",i:"⭐",c:"#10b981"},
+{t:"DIA 60 — VITÓRIA ABSOLUTA",m:"DIA 60. VITÓRIA. Seu corpo se reconstruiu: insulina otimizada, inflamação controlada, microbioma diversificado, pele renovada, mente afiada, energia constante. Você fez engenharia biológica no próprio corpo. A maioria não aguenta 3 dias. Você fez 60.",i:"🏆",c:"#f59e0b"}
+];
+function getMsg(d){return DAYS_MSGS[Math.min(Math.max(d,1),60)-1];}
+
+let state={days:Array(TOTAL).fill(false),startDate:null,name:"",photo:null,started:false};
+try{const r=localStorage.getItem(STORAGE_KEY);if(r)state=JSON.parse(r)}catch(e){}
+function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}catch(e){}}
+
+const $=id=>document.getElementById(id);
+
+function render(){
+  if(!state.started){renderStart();return}
+  renderMain();
+}
+
+function renderStart(){
+  $("tab-acucar").innerHTML=`
+  <div style="min-height:100dvh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:24px 24px 80px">
+    <div style="position:absolute;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(249,115,22,.12),transparent 70%);top:18%;left:50%;transform:translate(-50%,-50%)"></div>
+    <div style="text-align:center;position:relative;z-index:1;width:100%;max-width:380px">
+      <label for="photoInput" style="display:block;width:150px;height:150px;border-radius:50%;margin:0 auto 22px;position:relative;cursor:pointer">
+        ${state.photo
+          ?`<img src="${state.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;border:4px solid rgba(249,115,22,.45);box-shadow:0 0 40px rgba(249,115,22,.25)">`
+          :`<div style="width:100%;height:100%;border-radius:50%;background:rgba(255,255,255,.04);border:2px dashed rgba(255,255,255,.18);display:flex;flex-direction:column;align-items:center;justify-content:center;color:rgba(255,255,255,.35)">
+            <span style="font-size:48px">📷</span>
+            <span style="font-size:11px;opacity:.6;margin-top:6px;letter-spacing:1px">TOQUE PARA FOTO</span>
+          </div>`}
+        <div style="position:absolute;bottom:4px;right:4px;width:34px;height:34px;border-radius:50%;background:#f97316;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;font-weight:700;border:3px solid #08080d;box-shadow:0 0 12px rgba(249,115,22,.5)">+</div>
+      </label>
+      <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="handlePhoto(event)">
+      <input type="text" id="nameInput" placeholder="Seu nome" value="${state.name||''}" oninput="state.name=this.value;save()"
+        style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 20px;color:#fff;font-size:16px;text-align:center;width:100%;max-width:260px;display:block;margin:0 auto 24px;outline:none;font-family:inherit">
+      <h1 style="font-size:52px;font-weight:700;letter-spacing:6px;color:#fff;line-height:1">60 DIAS</h1>
+      <h2 style="font-size:20px;font-weight:700;letter-spacing:6px;margin:4px 0 24px;background:linear-gradient(90deg,#f97316,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent">SEM AÇÚCAR</h2>
+      <p style="font-size:14px;color:rgba(255,255,255,.35);line-height:1.8;margin-bottom:32px">Baseado em estudos científicos reais.<br>Cada dia tem sua mensagem exclusiva.</p>
+      <button onclick="startChallenge()" style="background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;border:none;padding:16px 44px;border-radius:14px;font-size:15px;font-weight:700;letter-spacing:3px;box-shadow:0 0 40px rgba(249,115,22,.3);font-family:inherit">INICIAR DESAFIO →</button>
+    </div>
+  </div>`;
+}
+
+function renderMain(){
+  const days=state.days,completed=days.filter(Boolean).length;
+  const pct=Math.round(completed/TOTAL*100);
+  let streak=0;for(let i=0;i<days.length;i++){if(days[i])streak++;else streak=0}
+  const phase=completed<=20?{n:"DESINTOXICAÇÃO",c:"#f97316",i:"🔥"}:completed<=40?{n:"ADAPTAÇÃO",c:"#06b6d4",i:"⚡"}:{n:"LIBERDADE",c:"#10b981",i:"🏆"};
+  const curMsg=getMsg(completed||1);
+  const sd=new Date(state.startDate);
+
+  let gridHTML="";
+  days.forEach((done,i)=>{
+    const c=i<20?"#f97316":i<40?"#06b6d4":"#10b981";
+    const cd=i<20?"#ea580c":i<40?"#0891b2":"#059669";
+    const dd=new Date(state.startDate);dd.setDate(dd.getDate()+i);
+    const dl=dd.toLocaleDateString("pt-BR",{day:"2-digit",month:"short"});
+    gridHTML+=`<button onclick="toggleDay(${i})" style="
+      aspect-ratio:1;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+      background:${done?`linear-gradient(135deg,${c},${cd})`:"rgba(255,255,255,.025)"};
+      border:${done?"1px solid transparent":"1px solid rgba(255,255,255,.06)"};
+      box-shadow:${done?`0 0 20px ${c}35`:"none"};min-height:unset;
+      transition:all .3s cubic-bezier(.4,0,.2,1)">
+      <span style="font-size:13px;font-weight:800;color:${done?"#fff":"rgba(255,255,255,.22)"}">${done?"✓":i+1}</span>
+      <span style="font-size:8px;color:${done?"rgba(255,255,255,.65)":"rgba(255,255,255,.1)"};margin-top:2px">${dl}</span>
+    </button>`;
+  });
+
+  const milesHTML=[{a:7,l:"1 SEM",e:"🌱"},{a:14,l:"2 SEM",e:"💪"},{a:30,l:"1 MÊS",e:"🔥"},{a:45,l:"45D",e:"⚡"},{a:60,l:"VITÓRIA",e:"🏆"}]
+    .map(m=>`<div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:rgba(255,255,255,.6);opacity:${completed>=m.a?1:.2};transition:opacity .4s">
+      <span style="font-size:20px">${m.e}</span><span style="font-size:9px;font-weight:700;letter-spacing:1px">${m.l}</span>
+    </div>`).join("");
+
+  $("tab-acucar").innerHTML=`
+  <div style="min-height:100dvh;background:linear-gradient(180deg,#08080d,#0d0d18 50%,#08080d);padding:env(safe-area-inset-top,16px) 16px 80px;max-width:480px;margin:0 auto;position:relative">
+
+    <header style="margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+        <div style="display:flex;align-items:center;gap:14px">
+          <label for="photoInput2" style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;flex-shrink:0;box-shadow:${state.photo?"0 0 20px rgba(249,115,22,.2)":"none"}">
+            ${state.photo?`<img src="${state.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:`<span style="font-size:26px">👤</span>`}
+          </label>
+          <input type="file" id="photoInput2" accept="image/*" style="display:none" onchange="handlePhoto(event)">
+          <div>
+            <h1 style="font-size:15px;font-weight:700;letter-spacing:2px;background:linear-gradient(90deg,#f97316,#06b6d4,#10b981);-webkit-background-clip:text;-webkit-text-fill-color:transparent">${state.name?state.name.toUpperCase():"60 DIAS SEM AÇÚCAR"}</h1>
+            <p style="font-size:11px;color:rgba(255,255,255,.25);margin-top:3px;letter-spacing:1px">Início: ${sd.toLocaleDateString("pt-BR")} • Dia ${Math.min(completed+1,60)}/60</p>
+          </div>
+        </div>
+        <button onclick="confirmReset()" style="background:none;border:1px solid rgba(255,255,255,.07);color:rgba(255,255,255,.2);border-radius:10px;width:36px;height:36px;font-size:16px;flex-shrink:0;min-height:unset">⟳</button>
+      </div>
+
+      <div style="display:flex;flex-direction:column;align-items:center;gap:16px">
+        <svg viewBox="0 0 200 200" width="160" height="160">
+          <defs>
+            <linearGradient id="pg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f97316"/><stop offset="50%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#10b981"/></linearGradient>
+            <filter id="gl"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <circle cx="100" cy="100" r="85" fill="none" stroke="rgba(255,255,255,.03)" stroke-width="8"/>
+          <circle cx="100" cy="100" r="85" fill="none" stroke="url(#pg)" stroke-width="8" stroke-dasharray="${2*Math.PI*85*pct/100} ${2*Math.PI*85}" stroke-linecap="round" filter="url(#gl)" transform="rotate(-90 100 100)" style="transition:stroke-dasharray .8s cubic-bezier(.4,0,.2,1)"/>
+          <text x="100" y="90" text-anchor="middle" fill="white" font-size="36" font-weight="700" font-family="'Codec Pro',sans-serif">${pct}%</text>
+          <text x="100" y="114" text-anchor="middle" fill="rgba(255,255,255,.35)" font-size="12">${completed}/${TOTAL} dias</text>
+        </svg>
+        <div style="display:flex;justify-content:center;gap:0">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:0 18px">
+            <span style="font-size:22px;font-weight:700;color:${phase.c}">${streak}</span>
+            <span style="font-size:9px;letter-spacing:2px;color:rgba(255,255,255,.25)">SEQUÊNCIA</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:0 18px;border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05)">
+            <span style="font-size:22px">${phase.i}</span>
+            <span style="font-size:9px;letter-spacing:2px;color:rgba(255,255,255,.25)">${phase.n}</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:0 18px">
+            <span style="font-size:22px;font-weight:700;color:${phase.c}">${TOTAL-completed}</span>
+            <span style="font-size:9px;letter-spacing:2px;color:rgba(255,255,255,.25)">RESTAM</span>
+          </div>
+        </div>
+      </div>
+
+      <div onclick="showMessage(${completed||1})" style="background:rgba(255,255,255,.02);border:1px solid ${curMsg.c}30;border-radius:14px;padding:14px 16px;margin-top:18px;cursor:pointer;-webkit-tap-highlight-color:transparent">
+        <span style="font-size:11px;color:${curMsg.c};font-weight:700;letter-spacing:2px">🔬 CIÊNCIA DO DIA ${completed||1}</span>
+        <p style="font-size:13px;color:rgba(255,255,255,.55);line-height:1.7;margin-top:6px">${curMsg.m.slice(0,130)}...</p>
+        <span style="font-size:10px;color:rgba(255,255,255,.3);font-weight:700;letter-spacing:2px;display:block;margin-top:8px">TOQUE PARA VER MAIS →</span>
+      </div>
+    </header>
+
+    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-bottom:22px">
+      ${gridHTML}
+    </div>
+
+    <div style="display:flex;justify-content:space-between;padding:16px 12px;background:rgba(255,255,255,.015);border-radius:14px;border:1px solid rgba(255,255,255,.03)">
+      ${milesHTML}
+    </div>
+
+    ${completed===TOTAL?`<div style="margin-top:18px;text-align:center;padding:16px;background:linear-gradient(135deg,rgba(16,185,129,.12),rgba(249,115,22,.12));border-radius:14px;border:1px solid rgba(16,185,129,.25);font-size:14px;font-weight:800;letter-spacing:2px;animation:pulse 2s infinite">🏆 DESAFIO COMPLETO — ${state.name?state.name.toUpperCase()+", ":""}VOCÊ VENCEU! 🏆</div>`:""}
+  </div>`;
+}
+
+function handlePhoto(e){
+  const f=e.target.files&&e.target.files[0];
+  if(!f)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    const img=new Image();
+    img.onload=function(){
+      const c=document.createElement("canvas");c.width=240;c.height=240;
+      const ctx=c.getContext("2d");
+      const m=Math.min(img.width,img.height);
+      ctx.drawImage(img,(img.width-m)/2,(img.height-m)/2,m,m,0,0,240,240);
+      state.photo=c.toDataURL("image/jpeg",.75);
+      save();render();
+    };
+    img.src=ev.target.result;
+  };
+  reader.readAsDataURL(f);
+}
+
+function startChallenge(){
+  state.started=true;
+  state.startDate=new Date().toISOString().slice(0,10);
+  state.days=Array(TOTAL).fill(false);
+  const nameEl=$("nameInput");
+  if(nameEl)state.name=nameEl.value;
+  save();render();
+}
+
+function toggleDay(i){
+  const on=!state.days[i];
+  state.days[i]=on;
+  save();render();
+  if(on)showMessage(i+1);
+}
+
+function showMessage(dayNum){
+  const msg=getMsg(dayNum);
+  const modal=$("modal");
+  if(!modal)return;
+  modal.innerHTML=`
+  <div onclick="closeModal()" style="position:fixed;inset:0;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;z-index:300;padding:20px;backdrop-filter:blur(12px)">
+    <div onclick="event.stopPropagation()" style="background:linear-gradient(180deg,#141428,#0d0d18);border-radius:24px;padding:32px 24px;max-width:380px;width:100%;border:1px solid ${msg.c}35;animation:slideIn .25s ease-out;max-height:85dvh;overflow-y:auto">
+      <div style="font-size:48px;text-align:center">${msg.i}</div>
+      <h3 style="font-size:14px;font-weight:800;letter-spacing:2px;text-align:center;margin:14px 0 10px;color:${msg.c}">${msg.t}</h3>
+      <p style="font-size:14px;color:rgba(255,255,255,.75);line-height:1.85;text-align:center">${msg.m}</p>
+      <div style="width:40px;height:3px;border-radius:2px;margin:18px auto;background:${msg.c}"></div>
+      <button onclick="closeModal()" style="display:block;width:100%;padding:15px;border-radius:14px;border:none;background:${msg.c};color:#fff;font-weight:800;font-size:14px;letter-spacing:2px;font-family:inherit">CONTINUAR 💪</button>
+    </div>
+  </div>`;
+}
+
+function closeModal(){const m=$("modal");if(m)m.innerHTML="";}
+
+function confirmReset(){
+  const modal=$("modal");
+  if(!modal)return;
+  modal.innerHTML=`
+  <div onclick="closeModal()" style="position:fixed;inset:0;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;z-index:300;padding:20px;backdrop-filter:blur(12px)">
+    <div onclick="event.stopPropagation()" style="background:#141428;border-radius:20px;padding:28px;max-width:320px;width:100%;text-align:center;border:1px solid rgba(255,255,255,.08);animation:slideIn .25s ease-out">
+      <p style="font-size:15px;color:rgba(255,255,255,.7)">⚠️ Zerar todo o progresso?</p>
+      <p style="font-size:12px;color:rgba(255,255,255,.3);margin-top:8px">Seu perfil será mantido.</p>
+      <div style="display:flex;gap:12px;margin-top:20px">
+        <button onclick="closeModal()" style="flex:1;padding:13px;border-radius:12px;border:none;background:rgba(255,255,255,.08);color:#fff;font-weight:700;font-size:13px;font-family:inherit">Cancelar</button>
+        <button onclick="resetChallenge()" style="flex:1;padding:13px;border-radius:12px;border:none;background:#dc2626;color:#fff;font-weight:700;font-size:13px;font-family:inherit">Resetar</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function resetChallenge(){
+  state.days=Array(TOTAL).fill(false);
+  state.startDate=new Date().toISOString().slice(0,10);
+  save();closeModal();render();
+}
+
+// ─── RITALINA — controle 100% manual ──────────────────────────────────────────
+const RITALINA_KEY="ritalina_ctrl_v2";
+let rState={lotes:[],doses:[],calcDose:1};
+try{const r=localStorage.getItem(RITALINA_KEY);if(r)rState=JSON.parse(r)}catch(e){}
+function rSave(){try{localStorage.setItem(RITALINA_KEY,JSON.stringify(rState))}catch(e){}}
+
+function fmtDate(d){return d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric"})}
+function todayStr(){return new Date().toISOString().slice(0,10)}
+
+function calcDashboard(){
+  const totalEstoque=rState.lotes.reduce((s,l)=>s+l.quantidade+(l.sobra||0),0);
+  const totalTomado=rState.doses.reduce((s,d)=>s+d.quantidade,0);
+  const estoqueAtual=Math.max(0,totalEstoque-totalTomado);
+  return{totalEstoque,totalTomado,estoqueAtual,dosesCount:rState.doses.length};
+}
+
+function calcDuramAte(dose){
+  const{estoqueAtual}=calcDashboard();
+  const dias=dose>0?Math.floor(estoqueAtual/dose):0;
+  const ate=new Date();ate.setHours(0,0,0,0);
+  ate.setDate(ate.getDate()+dias);
+  return{dias,ate};
+}
+
+function addLote(){
+  const dataEl=$("rit-lote-data"),qtEl=$("rit-lote-qt"),sobraEl=$("rit-lote-sobra");
+  if(!dataEl||!qtEl)return;
+  const data=dataEl.value,qt=parseFloat(qtEl.value),sobra=parseFloat(sobraEl?.value||0)||0;
+  if(!data||!qt||qt<1)return;
+  rState.lotes.push({id:Date.now(),data,quantidade:qt,sobra});
+  rSave();
+  dataEl.value="";qtEl.value="";if(sobraEl)sobraEl.value="0";
+  renderRitalina();
+}
+
+function removeLote(id){
+  rState.lotes=rState.lotes.filter(l=>l.id!==id);
+  rSave();renderRitalina();
+}
+
+function addDose(){
+  const dataEl=$("rit-dose-data"),qtEl=$("rit-dose-qt");
+  if(!dataEl||!qtEl)return;
+  const data=dataEl.value,qt=parseFloat(qtEl.value);
+  if(!data||!qt||qt<=0)return;
+  rState.doses.push({id:Date.now(),data,quantidade:qt});
+  rState.doses.sort((a,b)=>b.data.localeCompare(a.data));
+  rSave();
+  qtEl.value="";
+  renderRitalina();
+}
+
+function removeDose(id){
+  rState.doses=rState.doses.filter(d=>d.id!==id);
+  rSave();renderRitalina();
+}
+
+function updateCalcRit(v){
+  rState.calcDose=parseFloat(v)||1;
+  const valEl=$("rit-calc-val"),resEl=$("rit-calc-result"),alertEl=$("rit-calc-alert");
+  if(valEl)valEl.textContent=rState.calcDose;
+  if(!resEl)return;
+  const{dias,ate}=calcDuramAte(rState.calcDose);
+  resEl.textContent=`Seus remédios duram até ${fmtDate(ate)} (${dias} dias)`;
+  if(alertEl)alertEl.style.display=dias<5&&calcDashboard().totalEstoque>0?"flex":"none";
+}
+
+function renderRitalina(){
+  const tab=$("tab-ritalina");
+  if(!tab)return;
+  const db=calcDashboard();
+  const{dias:diasCalc,ate:ateCalc}=calcDuramAte(rState.calcDose);
+  const urgente=diasCalc<5&&db.totalEstoque>0;
+
+  const lotesHTML=rState.lotes.length===0
+    ?`<p style="font-size:12px;color:rgba(255,255,255,.2);text-align:center;padding:8px 0">Nenhum lote registrado</p>`
+    :rState.lotes.map(l=>`
+      <div class="history-item">
+        <div>
+          <span style="font-size:13px;font-weight:700;color:#fff">${l.quantidade} comp.</span>
+          ${l.sobra?`<span style="font-size:11px;color:rgba(139,92,246,.7);margin-left:6px">+${l.sobra} sobra</span>`:""}
+          <br><span style="font-size:11px;color:rgba(255,255,255,.3)">${new Date(l.data+"T12:00:00").toLocaleDateString("pt-BR")}</span>
+        </div>
+        <button class="btn-danger" onclick="removeLote(${l.id})">×</button>
+      </div>`).join("");
+
+  const dosesHTML=rState.doses.length===0
+    ?`<p style="font-size:12px;color:rgba(255,255,255,.2);text-align:center;padding:8px 0">Nenhuma dose registrada ainda</p>`
+    :rState.doses.map(d=>`
+      <div class="history-item">
+        <div>
+          <span style="font-size:22px;font-weight:700;color:#06b6d4">${d.quantidade}</span>
+          <span style="font-size:12px;color:rgba(255,255,255,.4);margin-left:6px">comp.</span>
+          <br><span style="font-size:11px;color:rgba(255,255,255,.3)">${new Date(d.data+"T12:00:00").toLocaleDateString("pt-BR")}</span>
+        </div>
+        <button class="btn-danger" onclick="removeDose(${d.id})">×</button>
+      </div>`).join("");
+
+  tab.innerHTML=`
+  <div style="min-height:100dvh;background:linear-gradient(180deg,#08080d,#0d0d18 50%,#08080d);padding:env(safe-area-inset-top,16px) 16px 80px;max-width:480px;margin:0 auto">
+
+    <!-- Header -->
+    <div style="margin-bottom:20px;padding-top:6px">
+      <h1 style="font-size:22px;font-weight:700;letter-spacing:3px;background:linear-gradient(90deg,#8b5cf6,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent">💊 RITALINA</h1>
+      <p style="font-size:10px;color:rgba(255,255,255,.25);margin-top:3px;letter-spacing:1px">CONTROLE MANUAL DE MEDICAMENTO</p>
+    </div>
+
+    <!-- Dashboard -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
+      <div style="background:rgba(139,92,246,.08);border:1px solid ${urgente?"rgba(239,68,68,.5)":"rgba(139,92,246,.2)"};border-radius:14px;padding:12px 10px;text-align:center;${urgente?"animation:pulseRed 1.5s infinite":""}">
+        <span style="font-size:9px;color:rgba(255,255,255,.3);font-weight:700;letter-spacing:1px;display:block;margin-bottom:4px">ESTOQUE</span>
+        <span style="font-size:26px;font-weight:700;color:${urgente?"#ef4444":"#8b5cf6"};line-height:1">${db.estoqueAtual % 1 === 0 ? db.estoqueAtual : db.estoqueAtual.toFixed(1)}</span>
+        ${urgente?`<span style="font-size:8px;color:#ef4444;font-weight:700;display:block;margin-top:2px">⚠️ BAIXO</span>`:""}
+      </div>
+      <div style="background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.15);border-radius:14px;padding:12px 10px;text-align:center">
+        <span style="font-size:9px;color:rgba(255,255,255,.3);font-weight:700;letter-spacing:1px;display:block;margin-bottom:4px">JÁ TOMEI</span>
+        <span style="font-size:26px;font-weight:700;color:#06b6d4;line-height:1">${db.totalTomado % 1 === 0 ? db.totalTomado : db.totalTomado.toFixed(1)}</span>
+      </div>
+      <div style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.15);border-radius:14px;padding:12px 10px;text-align:center">
+        <span style="font-size:9px;color:rgba(255,255,255,.3);font-weight:700;letter-spacing:1px;display:block;margin-bottom:4px">REGISTROS</span>
+        <span style="font-size:26px;font-weight:700;color:#10b981;line-height:1">${db.dosesCount}</span>
+      </div>
+    </div>
+
+    <!-- Registrar dose (seção principal) -->
+    <div class="card">
+      <span class="card-label">💉 REGISTRAR DOSE DE HOJE</span>
+      <div style="display:flex;gap:10px;margin-bottom:10px">
+        <div style="flex:1">
+          <label style="font-size:9px;color:rgba(255,255,255,.3);letter-spacing:1px;display:block;margin-bottom:5px">DATA</label>
+          <input type="date" id="rit-dose-data" class="inp" value="${todayStr()}" style="font-size:13px;padding:11px 12px">
+        </div>
+        <div style="width:90px">
+          <label style="font-size:9px;color:rgba(255,255,255,.3);letter-spacing:1px;display:block;margin-bottom:5px">COMP.</label>
+          <input type="number" id="rit-dose-qt" class="inp" placeholder="1" min="0.5" max="20" step="0.5" style="font-size:18px;font-weight:700;padding:10px;text-align:center">
+        </div>
+      </div>
+      <button onclick="addDose()" style="background:linear-gradient(135deg,#06b6d4,#0891b2);color:#fff;border:none;padding:14px;border-radius:12px;font-size:13px;font-weight:700;letter-spacing:2px;width:100%;font-family:inherit;box-shadow:0 0 20px rgba(6,182,212,.2)">REGISTRAR DOSE ✓</button>
+    </div>
+
+    <!-- Histórico de doses -->
+    ${db.dosesCount>0?`
+    <div class="card">
+      <span class="card-label">📋 HISTÓRICO DE DOSES</span>
+      ${dosesHTML}
+    </div>`:""}
+
+    <!-- Calculadora -->
+    ${db.totalEstoque>0?`
+    <div class="card">
+      <span class="card-label">🧮 DURA ATÉ QUANDO?</span>
+      <label style="font-size:13px;color:rgba(255,255,255,.45);display:block;margin-bottom:10px">Tomando <strong id="rit-calc-val" style="color:#8b5cf6;font-size:16px">${rState.calcDose}</strong> por dia:</label>
+      <input type="range" min="0.5" max="5" step="0.5" value="${rState.calcDose}"
+        oninput="updateCalcRit(this.value)"
+        style="width:100%;accent-color:#8b5cf6;margin-bottom:12px">
+      <div style="background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);border-radius:10px;padding:13px;text-align:center">
+        <p id="rit-calc-result" style="font-size:14px;color:rgba(255,255,255,.8);font-weight:700;line-height:1.6"></p>
+      </div>
+      <div id="rit-calc-alert" style="display:${urgente?"flex":"none"};align-items:center;gap:8px;margin-top:10px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35);border-radius:10px;padding:12px 14px;animation:pulse 1.5s infinite">
+        <span style="font-size:18px">⚠️</span>
+        <span style="font-size:12px;color:#ef4444;font-weight:700">ESTOQUE ACABANDO — MENOS DE 5 DIAS</span>
+      </div>
+    </div>
+    `:`
+    <div style="background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.04);border-radius:14px;padding:28px;text-align:center;margin-bottom:12px">
+      <span style="font-size:36px">💊</span>
+      <p style="font-size:13px;color:rgba(255,255,255,.3);margin-top:10px;line-height:1.7">Registre um lote para<br>ativar o dashboard e a calculadora</p>
+    </div>
+    `}
+
+    <!-- Registrar lote -->
+    <div class="card">
+      <span class="card-label">📦 REGISTRAR NOVO LOTE</span>
+      <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:12px">
+        <div>
+          <label style="font-size:9px;color:rgba(255,255,255,.3);letter-spacing:1px;display:block;margin-bottom:5px">DATA QUE PEGUEI NA FARMÁCIA</label>
+          <input type="date" id="rit-lote-data" class="inp" style="font-size:14px">
+        </div>
+        <div style="display:flex;gap:10px">
+          <div style="flex:1">
+            <label style="font-size:9px;color:rgba(255,255,255,.3);letter-spacing:1px;display:block;margin-bottom:5px">QUANTIDADE RECEBIDA</label>
+            <input type="number" id="rit-lote-qt" class="inp" placeholder="30" min="1" step="1" style="font-size:15px">
+          </div>
+          <div style="flex:1">
+            <label style="font-size:9px;color:rgba(255,255,255,.3);letter-spacing:1px;display:block;margin-bottom:5px">SOBROU DO ANTERIOR</label>
+            <input type="number" id="rit-lote-sobra" class="inp" placeholder="0" min="0" step="0.5" value="0" style="font-size:15px">
+          </div>
+        </div>
+      </div>
+      <button onclick="addLote()" class="btn-primary">REGISTRAR LOTE →</button>
+      ${rState.lotes.length>0?`<div style="margin-top:12px">${lotesHTML}</div>`:""}
+    </div>
+
+  </div>`;
+
+  updateCalcRit(rState.calcDose);
+}
+
+// ─── TAB NAVIGATION ───────────────────────────────────────────────────────────
+let activeTab="acucar";
+function switchTab(tab){
+  activeTab=tab;
+  const isAcucar=tab==="acucar";
+  $("tab-acucar").style.display=isAcucar?"":"none";
+  $("tab-ritalina").style.display=isAcucar?"none":"";
+  $("btn-acucar").className=isAcucar?"active":"";
+  $("btn-ritalina").className=isAcucar?"":"active";
+  if(!isAcucar)renderRitalina();
+}
+
+render();
+</script>
+</body>
+</html>
