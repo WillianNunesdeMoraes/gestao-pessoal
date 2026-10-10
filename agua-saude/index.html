@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Água Saúde — Apucarana | Beba saúde. Devolva saúde.</title>
-<meta name="description" content="Água Saúde, Apucarana: água com propósito. Parte do valor de cada venda retorna para iniciativas de saúde. Peça pelo WhatsApp.">
+<meta name="description" content="Água Saúde, Apucarana: parte do lucro de cada galão volta para a saúde. Peça pelo WhatsApp.">
 <meta name="theme-color" content="#0400ff">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M16 2C16 2 6 14 6 20a10 10 0 0 0 20 0C26 14 16 2 16 2z' fill='%230400ff'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,10 +24,9 @@
   --ink-2:#3c4260;
   --line:#e2e7f2;
   --radius:28px;
-  --radius-sm:16px;
   --shadow:0 1px 2px rgba(10,13,36,.04),0 12px 40px -12px rgba(4,0,255,.14);
   --ease-out:cubic-bezier(.16,1,.3,1);
-  --fs-hero:clamp(3.1rem,11.5vw,10.5rem);
+  --fs-hero:clamp(3rem,7.4vw,7rem);
   --fs-h2:clamp(2rem,5.2vw,4.2rem);
   --fs-h3:clamp(1.15rem,1.6vw,1.45rem);
   --fs-body:clamp(1rem,1.1vw,1.125rem);
@@ -37,13 +36,22 @@
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{margin:0;font-family:"Sora",system-ui,sans-serif;font-size:var(--fs-body);line-height:1.6;color:var(--ink);background:var(--bg);overflow-x:hidden;-webkit-font-smoothing:antialiased}
-img,iframe{max-width:100%;display:block}
+img{max-width:100%;display:block}
 a{color:inherit}
 :focus-visible{outline:3px solid var(--primary);outline-offset:3px;border-radius:8px}
 .skip{position:absolute;left:-999px;top:8px;background:var(--primary);color:#fff;padding:10px 16px;border-radius:12px;z-index:100}
 .skip:focus{left:16px}
 .wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gutter)}
-.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.pending{font-family:ui-monospace,Menlo,monospace;letter-spacing:0;font-weight:500;font-size:.78em;background:rgba(0,255,157,.14);border:1px dashed currentColor;padding:2px 6px;border-radius:6px;white-space:normal}
+
+/* ---------- Cursor: símbolo da marca ---------- */
+.has-cursor,.has-cursor a,.has-cursor button,.has-cursor [role="button"]{cursor:none}
+#cursor{position:fixed;left:0;top:0;z-index:999;width:38px;height:38px;margin:-19px 0 0 -19px;pointer-events:none;opacity:0;transition:opacity .3s,width .3s var(--ease-out),height .3s var(--ease-out),margin .3s var(--ease-out);filter:drop-shadow(0 6px 10px rgba(4,0,255,.35));will-change:transform}
+#cursor.on{opacity:1}
+#cursor.hot{width:58px;height:58px;margin:-29px 0 0 -29px}
+#cursor img,#cursor svg{width:100%;height:100%;object-fit:contain}
+.splash{position:fixed;z-index:998;width:10px;height:10px;margin:-5px 0 0 -5px;border:2px solid var(--secondary);border-radius:50%;pointer-events:none;animation:splash .7s var(--ease-out) forwards}
+@keyframes splash{to{transform:scale(7);opacity:0}}
 
 /* ---------- Buttons ---------- */
 .btn-wa{display:inline-flex;align-items:center;gap:12px;min-height:56px;padding:0 28px 0 22px;background:var(--wa);color:var(--wa-ink);font-weight:700;font-size:1.05rem;letter-spacing:-.01em;text-decoration:none;border-radius:999px;position:relative;overflow:hidden;isolation:isolate;box-shadow:0 10px 30px -10px rgba(37,211,102,.7);transition:transform .25s var(--ease-out),box-shadow .25s var(--ease-out)}
@@ -62,11 +70,12 @@ a{color:inherit}
 .nav{position:fixed;inset:12px 12px auto;z-index:50;display:flex;justify-content:center;pointer-events:none}
 .nav-inner{pointer-events:auto;width:100%;max-width:var(--max);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:8px 8px 8px 20px;background:rgba(255,255,255,.72);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);border:1px solid rgba(226,231,242,.9);border-radius:999px;box-shadow:var(--shadow)}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:800;letter-spacing:-.03em;min-height:44px}
-.brand img{height:38px;width:auto}
-.brand .wordmark{display:none;font-size:1.1rem}
+.brand .logo-img{height:40px;width:auto}
+.brand .wordmark{font-size:1.1rem}
 .brand .wordmark b{color:var(--primary)}
-.brand.no-logo img{display:none}
-.brand.no-logo .wordmark{display:inline}
+.brand.has-logo .wordmark{display:none}
+.brand .mark{width:30px;height:30px}
+.brand.has-logo .mark{display:none}
 .nav-links{display:flex;gap:4px;list-style:none;margin:0;padding:0}
 .nav-links a{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:999px;text-decoration:none;font-size:.92rem;font-weight:500;color:var(--ink-2);transition:background .2s,color .2s}
 .nav-links a:hover{background:rgba(4,0,255,.06);color:var(--primary)}
@@ -85,36 +94,39 @@ a{color:inherit}
 .mobile-menu li a::before{content:"0" counter(m);font-size:.9rem;font-weight:500;color:var(--secondary)}
 
 /* ---------- Hero ---------- */
-.hero{position:relative;min-height:100svh;display:flex;align-items:center;padding:132px 0 72px;overflow:hidden}
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;padding:128px 0 72px;overflow:hidden}
 #bubbles{position:absolute;inset:0;width:100%;height:100%;z-index:0}
 .hero .wrap{position:relative;z-index:1;width:100%}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(24px,4vw,56px);align-items:center}
 .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:.8rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
 .eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--secondary);box-shadow:0 0 0 4px rgba(0,191,255,.18)}
-.hero h1{margin:22px 0 0;font-size:var(--fs-hero);line-height:.88;letter-spacing:-.065em;font-weight:800}
+.hero h1{margin:20px 0 0;font-size:var(--fs-hero);line-height:.9;letter-spacing:-.06em;font-weight:800}
 .hero h1 .l1{display:block;color:var(--ink)}
 .liquid{position:relative;display:inline-block;white-space:nowrap}
 .liquid .ghost{color:transparent;-webkit-text-stroke:2px rgba(4,0,255,.28)}
 .liquid .water{position:absolute;inset:0;background:linear-gradient(180deg,var(--secondary) 0%,var(--primary) 46%,var(--primary-ink) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;clip-path:inset(100% 0 0 0);will-change:clip-path}
-.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:clamp(24px,5vw,72px);align-items:end;margin-top:clamp(28px,4vw,48px)}
-.hero-copy p{margin:0;max-width:56ch;color:var(--ink-2);font-size:clamp(1.02rem,1.35vw,1.22rem);font-weight:300}
-.cycle{margin:22px 0 30px;font-size:clamp(1.05rem,1.5vw,1.3rem);font-weight:600;letter-spacing:-.02em;min-height:1.6em}
+.hero-copy>p{margin:26px 0 0;max-width:52ch;color:var(--ink-2);font-size:clamp(1.02rem,1.3vw,1.18rem);font-weight:300}
+.cycle{margin:20px 0 28px;font-size:clamp(1.05rem,1.5vw,1.3rem);font-weight:600;letter-spacing:-.02em;min-height:1.6em}
 .cycle .typed{color:var(--primary)}
 .cycle .caret{display:inline-block;width:2px;height:1.05em;background:var(--secondary);vertical-align:-.15em;margin-left:2px;animation:blink 1s steps(1) infinite}
 @keyframes blink{50%{opacity:0}}
 .hero-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px}
-.trust{display:flex;flex-wrap:wrap;gap:10px;margin:28px 0 0;padding:0;list-style:none}
+.trust{display:flex;flex-wrap:wrap;gap:10px;margin:26px 0 0;padding:0;list-style:none}
 .trust li{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:.86rem;font-weight:500;color:var(--ink-2)}
 .trust svg{width:16px;height:16px;color:var(--primary);flex:none}
-/* Gauge — o "nível" do galão */
-.gauge{position:relative;height:300px;border-radius:120px 120px 40px 40px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden}
-.gauge .tank{position:absolute;inset:0}
-.gauge canvas{position:absolute;inset:0;width:100%;height:100%}
-.gauge .ticks{position:absolute;right:14px;top:40px;bottom:92px;display:flex;flex-direction:column;justify-content:space-between;font-size:.66rem;font-weight:600;color:var(--ink-2);text-align:right;z-index:2;mix-blend-mode:multiply}
-.gauge .ticks span::after{content:"";display:inline-block;width:10px;height:1px;background:currentColor;margin-left:6px;vertical-align:middle}
-.gauge .readout{position:absolute;left:18px;bottom:22px;right:46px;z-index:2;color:#fff}
-.gauge .readout strong{display:block;font-size:2.4rem;line-height:1;letter-spacing:-.05em}
-.gauge .readout small{display:block;margin-top:6px;font-size:.72rem;line-height:1.35;opacity:.92}
-.gauge-cap{margin-top:10px;font-size:.75rem;color:var(--ink-2);text-align:center}
+
+/* ---------- LOGO 3D (assinatura) ---------- */
+.stage{position:relative;width:100%;max-width:480px;aspect-ratio:1/1.08;margin-left:auto;perspective:1100px;touch-action:pan-y}
+.stage .halo{position:absolute;inset:6% 6% 22%;border-radius:50%;background:radial-gradient(circle at 50% 45%,rgba(0,191,255,.30),rgba(4,0,255,.10) 45%,transparent 70%);filter:blur(10px);animation:halo 6s ease-in-out infinite alternate}
+@keyframes halo{to{transform:scale(1.08);opacity:.75}}
+.logo3d{position:absolute;left:12%;right:12%;top:2%;aspect-ratio:1;transform-style:preserve-3d;will-change:transform}
+.logo3d .layer{position:absolute;inset:0;display:grid;place-items:center;backface-visibility:visible}
+.logo3d .layer img,.logo3d .layer svg{width:100%;height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none}
+.logo3d .layer.depth{filter:brightness(.55) saturate(1.4)}
+.logo3d .glare{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;opacity:.9;-webkit-mask:var(--mask) center/contain no-repeat;mask:var(--mask) center/contain no-repeat;background:radial-gradient(circle at var(--gx,30%) var(--gy,25%),rgba(255,255,255,.85),rgba(255,255,255,0) 42%)}
+.pool{position:absolute;left:0;right:0;bottom:0;height:30%}
+.pool canvas{width:100%;height:100%}
+.stage-cap{position:absolute;left:50%;bottom:-4px;transform:translateX(-50%);font-size:.72rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap}
 
 /* ---------- Sections ---------- */
 section{position:relative}
@@ -129,59 +141,71 @@ section{position:relative}
 .wave-div path{animation:drift 9s ease-in-out infinite alternate}
 @keyframes drift{to{transform:translateX(-40px)}}
 
-/* Galeria */
-.gallery-sec{background:var(--surface)}
-.rail{display:grid;grid-auto-flow:column;grid-auto-columns:clamp(280px,30vw,360px);gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px max(var(--gutter),calc((100vw - var(--max)) / 2 + var(--gutter))) 24px;scroll-padding:0 max(var(--gutter),calc((100vw - var(--max)) / 2 + var(--gutter)));scrollbar-width:thin;scrollbar-color:var(--primary) transparent;overscroll-behavior-x:contain}
-.rail:focus-visible{outline-offset:-3px}
-.post{scroll-snap-align:start;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column}
-.post .frame{position:relative;aspect-ratio:4/5;background:linear-gradient(160deg,#eef3ff,#e6f8ff)}
-.post iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.post .ph{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;color:var(--ink-2);font-size:.85rem}
-.post .ph svg{display:block;width:44px;height:44px;color:var(--secondary);margin:0 auto 10px}
-.post footer{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 18px;font-size:.85rem;font-weight:600}
-.post footer a{display:inline-flex;align-items:center;gap:6px;min-height:44px;color:var(--primary);text-decoration:none}
-.post footer a:hover{text-decoration:underline}
-.rail-ctrl{display:flex;gap:10px}
-.rail-ctrl button{width:52px;height:52px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--primary);cursor:pointer;display:grid;place-items:center;transition:background .2s,color .2s,transform .2s}
-.rail-ctrl button:hover{background:var(--primary);color:#fff}
-.rail-ctrl button:active{transform:scale(.94)}
-.rail-ctrl svg{width:20px;height:20px}
+/* ---------- 01 PROPÓSITO (manifesto + fluxo) ---------- */
+.purpose{background:var(--surface)}
+.manifesto{font-size:clamp(1.9rem,5vw,4.4rem);line-height:1.04;letter-spacing:-.05em;font-weight:700;max-width:20ch;margin:16px 0 clamp(48px,7vw,90px)}
+.manifesto .w{opacity:.14;transition:opacity .5s var(--ease-out),color .5s}
+.manifesto .w.lit{opacity:1}
+.manifesto .w.hl.lit{color:var(--primary)}
+.flow{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.pipe{position:absolute;left:16.6%;right:16.6%;top:58px;height:10px;border-radius:10px;background:#e8eefb;overflow:hidden;z-index:0}
+.pipe i{position:absolute;inset:0;transform-origin:left;transform:scaleX(var(--p,0));background:linear-gradient(90deg,var(--secondary),var(--primary),var(--secondary));background-size:200% 100%;animation:flowbg 2.4s linear infinite}
+@keyframes flowbg{to{background-position:-200% 0}}
+.station{position:relative;z-index:1;text-align:center;padding:0 10px}
+.station .node{width:126px;height:126px;margin:0 auto 22px;border-radius:50%;background:var(--surface);border:2px solid var(--line);display:grid;place-items:center;position:relative;overflow:hidden;transition:border-color .5s,transform .5s var(--ease-out),box-shadow .5s}
+.station .node::before{content:"";position:absolute;left:-10%;right:-10%;bottom:-100%;height:100%;background:linear-gradient(180deg,var(--secondary),var(--primary));border-radius:42%;transition:bottom 1s var(--ease-out);animation:slosh 7s linear infinite}
+.station .node svg{position:relative;width:40px;height:40px;color:var(--primary);transition:color .5s}
+.station.on .node{border-color:var(--primary);transform:translateY(-4px);box-shadow:0 18px 40px -16px rgba(4,0,255,.5)}
+.station.on .node::before{bottom:-28%}
+.station.on .node svg{color:#fff}
+.station h3{margin:0 0 6px;font-size:var(--fs-h3);letter-spacing:-.03em}
+.station p{margin:0 auto;max-width:28ch;color:var(--ink-2);font-weight:300}
+.proof-row{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:clamp(48px,6vw,72px)}
+.metric{border-radius:var(--radius);padding:26px 28px;background:var(--ink);color:#fff;position:relative;overflow:hidden}
+.metric .seal{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:var(--proof);color:var(--ink);font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.metric strong{display:block;margin-top:18px;font-size:clamp(2rem,4vw,3rem);letter-spacing:-.05em;line-height:1;color:var(--proof)}
+.metric span{display:block;margin-top:8px;font-size:.9rem;color:rgba(255,255,255,.75);font-weight:300}
 
-/* Problema -> Solução (bento) */
+/* ---------- 02 FOTOS 3D (carrossel cilíndrico) ---------- */
+.photos{overflow:hidden}
+.ring-stage{position:relative;height:clamp(380px,42vw,500px);perspective:1500px;touch-action:pan-y;user-select:none}
+.ring{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d;will-change:transform}
+.pcard{position:absolute;width:var(--cw,260px);aspect-ratio:4/5;left:calc(var(--cw,260px) / -2);top:calc(var(--cw,260px) * -.625);border-radius:24px;overflow:hidden;background:linear-gradient(160deg,#eef3ff,#dff4ff);border:1px solid rgba(255,255,255,.7);box-shadow:0 30px 60px -28px rgba(4,0,255,.45);transform-style:preserve-3d;padding:0;cursor:pointer;font:inherit;color:inherit}
+.pcard img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease-out)}
+.pcard:hover img{transform:scale(1.06)}
+.pcard .shine{position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,0) 30%,rgba(255,255,255,.45) 48%,rgba(255,255,255,0) 62%);background-size:250% 100%;background-position:var(--sx,120%) 0;pointer-events:none}
+.pcard .ph{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px;color:var(--ink-2);font-size:.82rem}
+.pcard .ph svg{display:block;width:46px;height:46px;margin:0 auto 10px;color:var(--secondary)}
+.pcard .num{position:absolute;left:14px;bottom:12px;font-size:.72rem;font-weight:700;letter-spacing:.12em;color:#fff;background:rgba(4,0,255,.8);padding:4px 9px;border-radius:999px}
+.ring-floor{position:absolute;left:10%;right:10%;bottom:4%;height:70px;border-radius:50%;background:radial-gradient(ellipse at center,rgba(0,191,255,.28),transparent 70%);filter:blur(6px)}
+.ring-ui{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:8px}
+.ring-ui button{width:54px;height:54px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--primary);display:grid;place-items:center;transition:background .2s,color .2s,transform .2s;cursor:pointer}
+.ring-ui button:hover{background:var(--primary);color:#fff}
+.ring-ui button:active{transform:scale(.94)}
+.ring-ui svg{width:20px;height:20px}
+.ring-ui output{min-width:9ch;text-align:center;font-weight:600;font-size:.9rem;color:var(--ink-2)}
+.hint{text-align:center;font-size:.8rem;color:var(--ink-2);margin-top:6px}
+
+/* ---------- 03 Problema -> Solução ---------- */
 .bento{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(24px,3vw,36px);position:relative;overflow:hidden}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(24px,3vw,36px);position:relative;overflow:hidden;transform-style:preserve-3d;transition:transform .5s var(--ease-out),box-shadow .5s}
 .card h3{margin:0 0 10px;font-size:var(--fs-h3);letter-spacing:-.03em;line-height:1.2}
 .card p{margin:0;color:var(--ink-2);font-weight:300}
 .card .tag{display:inline-block;margin-bottom:18px;font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
 .card.pain{grid-column:span 4;background:#f1f3f8}
 .card.pain .x{position:absolute;right:22px;top:22px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#fff;color:var(--ink-2)}
 .card.pain .x svg{width:16px;height:16px}
-.card.turn{grid-column:span 12;background:var(--primary);color:#fff;display:grid;grid-template-columns:1.4fr 1fr;gap:28px;align-items:center;padding:clamp(28px,4.5vw,56px)}
-.card.turn h3{font-size:clamp(1.6rem,3.6vw,2.8rem);line-height:1.02;letter-spacing:-.045em;margin:0}
-.card.turn p{color:rgba(255,255,255,.82)}
+.card.turn{grid-column:span 12;background:var(--primary);color:#fff;padding:clamp(28px,4.5vw,56px)}
+.card.turn h3{font-size:clamp(1.6rem,3.6vw,2.8rem);line-height:1.02;letter-spacing:-.045em;margin:0;max-width:22ch}
+.card.turn p{color:rgba(255,255,255,.82);max-width:56ch}
 .card.turn .tag{color:var(--secondary)}
 .card.turn .btn-wa{margin-top:24px}
 .card.sol{grid-column:span 4}
 .card.sol .ico{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:rgba(4,0,255,.07);color:var(--primary);margin-bottom:18px}
 .card.sol .ico svg{width:22px;height:22px}
-.turn-visual{position:relative;aspect-ratio:1;max-width:280px;justify-self:end;width:100%}
-.turn-visual canvas{width:100%;height:100%;border-radius:50%;background:rgba(255,255,255,.08)}
+[data-tilt]:hover{box-shadow:0 24px 50px -24px rgba(4,0,255,.35)}
 
-/* Ciclo / provas */
-.cycle-sec{background:var(--surface)}
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;counter-reset:s}
-.step{counter-increment:s;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);padding:30px;position:relative}
-.step::before{content:"0" counter(s);display:block;font-size:3.4rem;font-weight:800;letter-spacing:-.06em;line-height:1;color:transparent;-webkit-text-stroke:1.5px var(--secondary);margin-bottom:22px}
-.step h3{margin:0 0 8px;font-size:var(--fs-h3);letter-spacing:-.03em}
-.step p{margin:0;color:var(--ink-2);font-weight:300}
-.proof-row{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:18px}
-.metric{border-radius:var(--radius);padding:26px 28px;background:var(--ink);color:#fff;position:relative;overflow:hidden}
-.metric .seal{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:var(--proof);color:var(--ink);font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
-.metric strong{display:block;margin-top:18px;font-size:clamp(2rem,4vw,3rem);letter-spacing:-.05em;line-height:1;color:var(--proof)}
-.metric span{display:block;margin-top:8px;font-size:.9rem;color:rgba(255,255,255,.75);font-weight:300}
-.pending{font-family:ui-monospace,Menlo,monospace;letter-spacing:0;font-weight:500;font-size:.78em;background:rgba(0,255,157,.14);border:1px dashed currentColor;padding:2px 6px;border-radius:6px;white-space:normal}
-
-/* Sobre */
+/* ---------- 04 Sobre ---------- */
 .about{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch}
 .about .card{display:flex;flex-direction:column;justify-content:space-between;gap:24px}
 .quote{background:linear-gradient(160deg,#fff,#eef4ff)}
@@ -189,24 +213,24 @@ section{position:relative}
 .quote blockquote mark{background:none;color:var(--primary)}
 .quote cite{font-style:normal;font-size:.85rem;color:var(--ink-2)}
 .about-text p+p{margin-top:14px}
-.pin{display:flex;align-items:center;gap:10px;font-weight:600;font-size:.9rem}
+.pin{display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-weight:600;font-size:.9rem}
 .pin svg{width:18px;height:18px;color:var(--primary)}
 
-/* CTA final */
+/* ---------- 05 CTA final ---------- */
 .final{padding:clamp(40px,6vw,80px) 0 clamp(80px,10vw,130px)}
 .final-card{position:relative;overflow:hidden;border-radius:clamp(28px,4vw,48px);background:var(--surface);border:1px solid var(--line);padding:clamp(40px,8vw,110px) clamp(24px,6vw,80px);text-align:center;isolation:isolate}
 .final-card canvas{position:absolute;inset:0;width:100%;height:100%;z-index:-1}
 .final-card h2{margin:16px auto 0;font-size:clamp(2.4rem,7.5vw,6.4rem);line-height:.92;letter-spacing:-.06em;font-weight:800;max-width:none}
-.final-card h2 .liquid .ghost{-webkit-text-stroke-color:rgba(4,0,255,.3)}
 .final-card p{max-width:46ch;margin:22px auto 32px;color:var(--ink-2);font-weight:300}
 .final-card .fine{margin:18px auto 0;font-size:.82rem}
 .final-card .idx{justify-content:center}
 
-/* Footer */
+/* ---------- Footer ---------- */
 .foot{background:var(--ink);color:#c9cde0;padding:64px 0 32px}
 .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:32px}
 .foot .brand{color:#fff}
-.foot .brand img{height:44px;filter:brightness(0) invert(1)}
+.foot .brand .logo-img{height:48px}
+.foot .brand .wordmark b{color:var(--secondary)}
 .foot h4{margin:0 0 14px;color:#fff;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase}
 .foot ul{list-style:none;margin:0;padding:0}
 .foot li a{display:inline-flex;align-items:center;gap:8px;min-height:40px;text-decoration:none;color:#c9cde0}
@@ -215,79 +239,84 @@ section{position:relative}
 .foot p{margin:14px 0 0;max-width:36ch;font-weight:300;font-size:.92rem}
 .foot-bottom{margin-top:48px;padding-top:22px;border-top:1px solid rgba(255,255,255,.1);display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:.8rem}
 
-/* Floating WA */
 .fab{position:fixed;right:18px;bottom:18px;z-index:40;width:60px;height:60px;border-radius:50%;background:var(--wa);color:var(--wa-ink);display:grid;place-items:center;box-shadow:0 12px 30px -8px rgba(37,211,102,.8);transform:translateY(120px);transition:transform .45s var(--ease-out)}
 .fab.show{transform:none}
 .fab svg{width:30px;height:30px}
 
-/* Reveal */
 .reveal{opacity:0;transform:translateY(28px);transition:opacity .9s var(--ease-out),transform .9s var(--ease-out)}
 .reveal.in{opacity:1;transform:none}
 .hero .stagger{opacity:0;transform:translateY(24px)}
 .loaded .hero .stagger{opacity:1;transform:none;transition:opacity 1s var(--ease-out),transform 1s var(--ease-out);transition-delay:calc(var(--d,0) * 1ms)}
 
-/* Responsive */
 @media (max-width:1024px){
   .card.pain,.card.sol{grid-column:span 6}
-  .card.pain:last-of-type{grid-column:span 12}
+  .card.pain:nth-of-type(3){grid-column:span 12}
 }
-@media (max-width:860px){
+@media (max-width:900px){
   .nav-links,.nav .btn-wa{display:none}
   .burger{display:inline-flex}
+  .hero{padding-top:110px}
   .hero-grid{grid-template-columns:1fr}
-  .gauge{height:200px;max-width:none;border-radius:40px}
-  .card.turn{grid-template-columns:1fr}
-  .turn-visual{justify-self:start;max-width:200px}
-  .steps,.proof-row,.about{grid-template-columns:1fr}
+  .stage{order:-1;max-width:320px;margin:0 auto}
+  .flow{grid-template-columns:1fr;gap:34px}
+  .pipe{left:50%;right:auto;top:63px;bottom:120px;width:10px;height:auto;transform:translateX(-50%)}
+  .pipe i{transform-origin:top;transform:scaleY(var(--p,0))}
+  .station h3,.station p{position:relative;background:var(--surface);padding:4px 8px;border-radius:10px;display:table;margin-left:auto;margin-right:auto}
+  .proof-row,.about{grid-template-columns:1fr}
   .foot-grid{grid-template-columns:1fr 1fr}
   .foot-grid>div:first-child{grid-column:1/-1}
 }
 @media (max-width:640px){
-  .card.pain,.card.sol,.card.pain:last-of-type{grid-column:span 12}
+  .card.pain,.card.sol,.card.pain:nth-of-type(3){grid-column:span 12}
   .liquid .ghost{-webkit-text-stroke-width:1.5px}
-  .hero h1{letter-spacing:-.055em}
-  .btn-wa.lg{width:100%;justify-content:center}
-  .hero-actions .btn-wa{width:100%;justify-content:center}
+  .stage{max-width:260px}
+  .hero-actions .btn-wa,.btn-wa.lg{width:100%;justify-content:center}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
   .reveal,.hero .stagger{opacity:1;transform:none}
   .cycle .caret{display:none}
+  .manifesto .w{opacity:1}
 }
 </style>
 </head>
 <body>
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
 
-<!-- SVG sprite -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="g-drop" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#00bfff"/><stop offset=".55" stop-color="#0400ff"/><stop offset="1" stop-color="#0300c2"/></linearGradient>
+  </defs>
+  <!-- Símbolo provisório (gota + cruz da saúde). Substituído pela logo real via CONFIG. -->
+  <symbol id="i-mark" viewBox="0 0 64 64"><path fill="url(#g-drop)" d="M32 3S10 27.5 10 41a22 22 0 0 0 44 0C54 27.5 32 3 32 3z"/><path fill="#fff" d="M28.5 30h7v8h8v7h-8v8h-7v-8h-8v-7h8z"/><path fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="2.4" stroke-linecap="round" d="M17 40c3-9 8-16 11-20"/></symbol>
   <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91A9.85 9.85 0 0 0 12.04 2zm5.8 14.06c-.24.68-1.42 1.3-1.95 1.35-.5.05-1.13.07-1.82-.11-.42-.13-.96-.31-1.65-.61-2.9-1.25-4.79-4.17-4.94-4.36-.14-.2-1.18-1.57-1.18-3s.75-2.13 1.02-2.42c.26-.29.57-.36.76-.36h.55c.18 0 .42-.07.65.5.24.58.82 2 .89 2.15.07.14.12.31.02.5-.1.2-.14.31-.29.48-.14.17-.3.38-.43.5-.14.15-.29.3-.13.59.17.29.74 1.22 1.59 1.98 1.09.97 2.01 1.27 2.3 1.42.29.14.46.12.62-.07.17-.2.72-.84.91-1.13.19-.29.38-.24.65-.14.26.1 1.68.79 1.97.94.29.14.48.21.55.33.07.12.07.7-.17 1.38z"/></symbol>
   <symbol id="i-drop" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 2.7S5 10.4 5 15a7 7 0 0 0 14 0c0-4.6-7-12.3-7-12.3z"/></symbol>
   <symbol id="i-heart" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3.2 12h4.3l1.5-3 3 6 1.5-3h7.3"/></symbol>
   <symbol id="i-truck" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></g></symbol>
+  <symbol id="i-coins" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></g></symbol>
   <symbol id="i-pin" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></g></symbol>
   <symbol id="i-shield" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></g></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" d="M18 6 6 18M6 6l12 12"/></symbol>
   <symbol id="i-arrow-l" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M19 12H5m7 7-7-7 7-7"/></symbol>
   <symbol id="i-arrow-r" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-7-7 7 7-7 7"/></symbol>
-  <symbol id="i-ext" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></g></symbol>
   <symbol id="i-ig" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></g></symbol>
-  <symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></g></symbol>
   <symbol id="i-recycle" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/></g></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.09-3.09a2 2 0 0 0-2.82 0L6 21"/></g></symbol>
 </svg>
 
-<!-- NAV -->
+<div id="cursor" aria-hidden="true"><svg><use href="#i-mark"/></svg></div>
+
 <header class="nav">
   <nav class="nav-inner" aria-label="Principal">
     <a href="#topo" class="brand" aria-label="Água Saúde — início">
-      <img src="https://i.imgur.com/YU6ncaE.png" alt="Água Saúde" width="120" height="38" fetchpriority="high" onerror="this.parentNode.classList.add('no-logo')">
+      <svg class="mark" aria-hidden="true"><use href="#i-mark"/></svg>
       <span class="wordmark">Água <b>Saúde</b></span>
     </a>
     <ul class="nav-links">
-      <li><a href="#galeria">Galeria</a></li>
       <li><a href="#proposito">Propósito</a></li>
+      <li><a href="#fotos">Fotos</a></li>
+      <li><a href="#solucao">Por que nós</a></li>
       <li><a href="#sobre">Sobre</a></li>
-      <li><a href="#pedir">Pedir</a></li>
     </ul>
     <a class="btn-wa sm" href="https://wa.me/+554391839563?text=Beba%20Sa%C3%BAde" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-wa"/></svg>Beba Saúde</a>
     <button class="burger" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-mobile"><span></span></button>
@@ -296,10 +325,10 @@ section{position:relative}
 
 <div class="mobile-menu" id="menu-mobile" aria-hidden="true">
   <ol>
-    <li><a href="#galeria">Galeria</a></li>
     <li><a href="#proposito">Propósito</a></li>
+    <li><a href="#fotos">Fotos</a></li>
+    <li><a href="#solucao">Por que nós</a></li>
     <li><a href="#sobre">Sobre</a></li>
-    <li><a href="#pedir">Pedir agora</a></li>
   </ol>
   <a class="btn-wa lg" href="https://wa.me/+554391839563?text=Beba%20Sa%C3%BAde" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-wa"/></svg>Beba Saúde</a>
 </div>
@@ -308,115 +337,139 @@ section{position:relative}
 <!-- HERO -->
 <section class="hero" id="topo" aria-labelledby="h-hero">
   <canvas id="bubbles" aria-hidden="true"></canvas>
-  <div class="wrap">
-    <span class="eyebrow stagger" style="--d:0"><span class="dot"></span>Água mineral · Apucarana — PR</span>
-    <h1 id="h-hero">
-      <span class="l1 stagger" style="--d:120">Beba saúde.</span>
-      <span class="liquid" data-level="0.84" data-delay="500"><span class="ghost">Devolva saúde.</span><span class="water" aria-hidden="true">Devolva saúde.</span></span>
-    </h1>
-
-    <div class="hero-grid">
-      <div class="hero-copy">
-        <p class="stagger" style="--d:900">Cada Água Saúde carrega um propósito: parte do valor da sua compra retorna para projetos e iniciativas que ajudam a cuidar da saúde de outras pessoas.</p>
-        <div class="cycle stagger" style="--d:1050" aria-live="off">
-          <span>Todo galão fecha um ciclo:</span>
-          <span class="typed" data-words='["Beba saúde","devolva saúde."]'>Beba saúde</span><span class="caret" aria-hidden="true"></span>
-        </div>
-        <div class="hero-actions stagger" style="--d:1200">
-          <a class="btn-wa lg" href="https://wa.me/+554391839563?text=Beba%20Sa%C3%BAde" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-wa"/></svg>Beba Saúde</a>
-          <a class="btn-ghost" href="#proposito">Para onde vai o seu dinheiro <svg width="18" height="18" aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
-        </div>
-        <ul class="trust stagger" style="--d:1350" aria-label="Sinais de confiança">
-          <li><svg aria-hidden="true"><use href="#i-heart"/></svg>Parte de cada venda vai para a saúde</li>
-          <li><svg aria-hidden="true"><use href="#i-truck"/></svg>Entrega em Apucarana</li>
-          <li><svg aria-hidden="true"><use href="#i-shield"/></svg>Galão lacrado <span class="pending">[CONFIRMAR registro/laudo]</span></li>
-        </ul>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow stagger" style="--d:0"><span class="dot"></span>Água mineral · Apucarana — PR</span>
+      <h1 id="h-hero">
+        <span class="l1 stagger" style="--d:120">Beba saúde.</span>
+        <span class="liquid" data-level="0.84" data-delay="500"><span class="ghost">Devolva saúde.</span><span class="water" aria-hidden="true">Devolva saúde.</span></span>
+      </h1>
+      <p class="stagger" style="--d:900">Cada Água Saúde carrega um propósito: parte do valor da sua compra retorna para projetos e iniciativas que ajudam a cuidar da saúde de outras pessoas.</p>
+      <div class="cycle stagger" style="--d:1050">
+        <span>Todo galão fecha um ciclo:</span>
+        <span class="typed" data-words='["Beba saúde","devolva saúde."]'>Beba saúde</span><span class="caret" aria-hidden="true"></span>
       </div>
-
-      <figure class="stagger" style="--d:700;margin:0" aria-label="Medidor do galão: parte de cada venda volta para a saúde">
-        <div class="gauge">
-          <canvas id="tank" aria-hidden="true"></canvas>
-          <div class="ticks" aria-hidden="true"><span>20L</span><span>15L</span><span>10L</span></div>
-          <div class="readout">
-            <strong><span class="pending" style="font-size:.5em">[COLAR %]</span></strong>
-            <small>de cada venda volta para a saúde</small>
-          </div>
-        </div>
-        <figcaption class="gauge-cap">O nível que importa não é só o do galão.</figcaption>
-      </figure>
+      <div class="hero-actions stagger" style="--d:1200">
+        <a class="btn-wa lg" href="https://wa.me/+554391839563?text=Beba%20Sa%C3%BAde" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-wa"/></svg>Beba Saúde</a>
+        <a class="btn-ghost" href="#proposito">Veja para onde vai o lucro <svg width="18" height="18" aria-hidden="true"><use href="#i-arrow-r"/></svg></a>
+      </div>
+      <ul class="trust stagger" style="--d:1350" aria-label="Sinais de confiança">
+        <li><svg aria-hidden="true"><use href="#i-heart"/></svg>Parte do lucro vai para a saúde</li>
+        <li><svg aria-hidden="true"><use href="#i-truck"/></svg>Entrega em Apucarana</li>
+        <li><svg aria-hidden="true"><use href="#i-shield"/></svg>Galão lacrado <span class="pending">[CONFIRMAR registro/laudo]</span></li>
+      </ul>
     </div>
+
+    <figure class="stage stagger" id="stage" style="--d:300;margin:0" role="img" aria-label="Logomarca Água Saúde em 3D">
+      <div class="halo" aria-hidden="true"></div>
+      <div class="logo3d" id="logo3d" aria-hidden="true"></div>
+      <div class="pool" aria-hidden="true"><canvas id="pool"></canvas></div>
+      <figcaption class="stage-cap">Arraste para girar</figcaption>
+    </figure>
   </div>
 </section>
 
 <svg class="wave-div" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M0 34c120-22 240-22 360 0s240 22 360 0 240-22 360 0 240 22 360 0 240-22 360 0v26H0z" transform="scale(1.06 1)"/></svg>
 
-<!-- 01 GALERIA -->
-<section class="sec gallery-sec" id="galeria" aria-labelledby="h-gal" style="padding-top:clamp(40px,6vw,80px)">
-  <div class="wrap sec-head reveal">
-    <div>
-      <span class="idx">01 · Galeria</span>
-      <h2 id="h-gal">Água que <em>circula</em> por Apucarana.</h2>
+<!-- 01 PROPÓSITO -->
+<section class="sec purpose" id="proposito" aria-labelledby="h-prop" style="padding-top:clamp(40px,6vw,80px)">
+  <div class="wrap">
+    <span class="idx reveal">01 · Nosso propósito</span>
+    <h2 id="h-prop" class="manifesto" data-words>Toda água que você compra faz um caminho. Na Água Saúde, parte do lucro desse caminho termina na saúde de alguém.</h2>
+
+    <div class="flow" id="flow">
+      <div class="pipe" aria-hidden="true"><i></i></div>
+      <div class="station" data-at=".05">
+        <div class="node"><svg aria-hidden="true"><use href="#i-drop"/></svg></div>
+        <h3>Você bebe</h3>
+        <p>Pede seu galão pelo WhatsApp e recebe em casa, em Apucarana.</p>
+      </div>
+      <div class="station" data-at=".5">
+        <div class="node"><svg aria-hidden="true"><use href="#i-coins"/></svg></div>
+        <h3>O lucro é separado</h3>
+        <p>Uma porcentagem de cada venda é reservada desde o início. <span class="pending">[COLAR %]</span></p>
+      </div>
+      <div class="station" data-at=".92">
+        <div class="node"><svg aria-hidden="true"><use href="#i-heart"/></svg></div>
+        <h3>Vira saúde</h3>
+        <p>O valor segue para projetos e iniciativas de saúde. <span class="pending">[COLAR quem é apoiado]</span></p>
+      </div>
     </div>
-    <div class="rail-ctrl">
-      <button type="button" data-rail="-1" aria-label="Posts anteriores"><svg aria-hidden="true"><use href="#i-arrow-l"/></svg></button>
-      <button type="button" data-rail="1" aria-label="Próximos posts"><svg aria-hidden="true"><use href="#i-arrow-r"/></svg></button>
+
+    <div class="proof-row">
+      <div class="metric reveal"><span class="seal">Retorno</span><strong><span class="pending">[COLAR %]</span></strong><span>do lucro de cada venda destinado à saúde</span></div>
+      <div class="metric reveal"><span class="seal">Impacto</span><strong><span class="pending">[COLAR nº]</span></strong><span>galões que já devolveram saúde</span></div>
+      <div class="metric reveal"><span class="seal">Apoiados</span><strong><span class="pending">[COLAR nº]</span></strong><span>projetos e iniciativas beneficiados</span></div>
     </div>
   </div>
-  <div class="rail reveal" id="rail" tabindex="0" role="region" aria-label="Posts do Instagram da Água Saúde (role para os lados)"></div>
 </section>
 
-<!-- 02 PROBLEMA -> SOLUÇÃO -->
-<section class="sec" id="proposito" aria-labelledby="h-prob">
+<!-- 02 FOTOS 3D -->
+<section class="sec photos" id="fotos" aria-labelledby="h-fotos">
+  <div class="wrap sec-head reveal">
+    <div>
+      <span class="idx">02 · Fotos</span>
+      <h2 id="h-fotos">A Água Saúde <em>de perto.</em></h2>
+    </div>
+    <p class="lead">Gire a vitrine: arraste, use as setas ou toque numa foto.</p>
+  </div>
+  <div class="ring-stage reveal" id="ringStage" role="region" aria-roledescription="carrossel" aria-label="Fotos da Água Saúde" tabindex="0">
+    <div class="ring-floor" aria-hidden="true"></div>
+    <div class="ring" id="ring"></div>
+  </div>
+  <div class="ring-ui">
+    <button type="button" id="ringPrev" aria-label="Foto anterior"><svg aria-hidden="true"><use href="#i-arrow-l"/></svg></button>
+    <output id="ringOut" aria-live="polite">1 / 6</output>
+    <button type="button" id="ringNext" aria-label="Próxima foto"><svg aria-hidden="true"><use href="#i-arrow-r"/></svg></button>
+  </div>
+</section>
+
+<!-- 03 PROBLEMA -> SOLUÇÃO -->
+<section class="sec" id="solucao" aria-labelledby="h-prob" style="background:var(--surface)">
   <div class="wrap">
     <div class="sec-head reveal">
       <div>
-        <span class="idx">02 · Problema → Solução</span>
-        <h2 id="h-prob">Água é tudo igual. <em>O destino do seu dinheiro, não.</em></h2>
+        <span class="idx">03 · Problema → Solução</span>
+        <h2 id="h-prob">Água é tudo igual. <em>O destino do lucro, não.</em></h2>
       </div>
       <p class="lead">Mineral, lacrada, entregue em casa. Todo fornecedor promete isso. A pergunta certa é outra.</p>
     </div>
-
     <div class="bento">
-      <article class="card pain reveal">
+      <article class="card pain reveal" data-tilt>
         <span class="x" aria-hidden="true"><svg><use href="#i-x"/></svg></span>
         <span class="tag">O problema</span>
         <h3>Você compra no automático.</h3>
         <p>Liga para o número de sempre, paga, recebe. Toda semana. Nada além do galão.</p>
       </article>
-      <article class="card pain reveal">
+      <article class="card pain reveal" data-tilt>
         <span class="x" aria-hidden="true"><svg><use href="#i-x"/></svg></span>
         <span class="tag">O problema</span>
         <h3>A disputa é só preço.</h3>
         <p>Com tanta revenda na cidade, a diferença vira centavos. E centavos não mudam nada.</p>
       </article>
-      <article class="card pain reveal">
+      <article class="card pain reveal" data-tilt>
         <span class="x" aria-hidden="true"><svg><use href="#i-x"/></svg></span>
         <span class="tag">O problema</span>
-        <h3>O dinheiro some.</h3>
+        <h3>O lucro some.</h3>
         <p>Um gasto essencial, fixo, recorrente. Que nunca volta para a sua comunidade.</p>
       </article>
-
       <article class="card turn reveal">
-        <div>
-          <span class="tag">A solução</span>
-          <h3>Mesmo gasto. Mesmo galão. Agora ele cuida de alguém.</h3>
-          <p style="margin-top:14px">Na Água Saúde, uma porcentagem de toda água vendida volta para a saúde. Você não muda o hábito, só o fornecedor.</p>
-          <a class="btn-wa" href="https://wa.me/+554391839563?text=Beba%20Sa%C3%BAde" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-wa"/></svg>Beba Saúde</a>
-        </div>
-        <div class="turn-visual" aria-hidden="true"><canvas id="orb"></canvas></div>
+        <span class="tag">A solução</span>
+        <h3>Mesmo gasto. Mesmo galão. Agora ele cuida de alguém.</h3>
+        <p style="margin-top:14px">Na Água Saúde, uma porcentagem de toda água vendida volta para a saúde. Você não muda o hábito, só o fornecedor.</p>
+        <a class="btn-wa" href="https://wa.me/+554391839563?text=Beba%20Sa%C3%BAde" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-wa"/></svg>Beba Saúde</a>
       </article>
-
-      <article class="card sol reveal">
+      <article class="card sol reveal" data-tilt>
         <span class="ico" aria-hidden="true"><svg><use href="#i-wa"/></svg></span>
         <h3>Pediu, chegou.</h3>
         <p>Pedido direto no WhatsApp, sem cadastro e sem app. <span class="pending">[CONFIRMAR prazo de entrega]</span></p>
       </article>
-      <article class="card sol reveal">
+      <article class="card sol reveal" data-tilt>
         <span class="ico" aria-hidden="true"><svg><use href="#i-recycle"/></svg></span>
         <h3>Troca do vasilhame.</h3>
-        <p>Você devolve o galão vazio, recebe o cheio. Simples como deve ser. <span class="pending">[CONFIRMAR política de casco]</span></p>
+        <p>Você devolve o galão vazio e recebe o cheio. <span class="pending">[CONFIRMAR política de casco]</span></p>
       </article>
-      <article class="card sol reveal">
+      <article class="card sol reveal" data-tilt>
         <span class="ico" aria-hidden="true"><svg><use href="#i-heart"/></svg></span>
         <h3>Propósito à vista.</h3>
         <p>Você sabe para onde vai o retorno. <span class="pending">[COLAR projetos/instituições apoiadas]</span></p>
@@ -425,46 +478,24 @@ section{position:relative}
   </div>
 </section>
 
-<!-- CICLO + PROVA SOCIAL -->
-<section class="sec cycle-sec" aria-labelledby="h-ciclo">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <div>
-        <span class="idx">O ciclo</span>
-        <h2 id="h-ciclo">Três passos. <em>Duas pessoas</em> bebem saúde.</h2>
-      </div>
-    </div>
-    <div class="steps">
-      <div class="step reveal"><h3>Você pede</h3><p>Uma mensagem no WhatsApp. Diga quantos galões e o endereço.</p></div>
-      <div class="step reveal"><h3>A gente entrega</h3><p>Água mineral lacrada, na sua porta, em Apucarana.</p></div>
-      <div class="step reveal"><h3>Uma parte volta</h3><p>Um percentual da venda segue para iniciativas de saúde.</p></div>
-    </div>
-    <div class="proof-row">
-      <div class="metric reveal"><span class="seal">Retorno</span><strong><span class="pending">[COLAR %]</span></strong><span>de cada venda destinado à saúde</span></div>
-      <div class="metric reveal"><span class="seal">Impacto</span><strong><span class="pending">[COLAR nº]</span></strong><span>galões que já devolveram saúde</span></div>
-      <div class="metric reveal"><span class="seal">Apoiados</span><strong><span class="pending">[COLAR nº]</span></strong><span>projetos e iniciativas beneficiados</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- 03 SOBRE -->
+<!-- 04 SOBRE -->
 <section class="sec" id="sobre" aria-labelledby="h-sobre">
   <div class="wrap">
     <div class="sec-head reveal">
       <div>
-        <span class="idx">03 · Sobre</span>
+        <span class="idx">04 · Sobre</span>
         <h2 id="h-sobre">De Apucarana, <em>para Apucarana.</em></h2>
       </div>
     </div>
     <div class="about">
-      <div class="card about-text reveal">
+      <div class="card about-text reveal" data-tilt>
         <div>
           <p>A Água Saúde nasceu com uma ideia simples: se todo mundo precisa de água todos os dias, esse gasto pode fazer bem para mais gente.</p>
-          <p>Somos uma revenda de água mineral em Apucarana que trata cada entrega como parte de algo maior. Atendimento direto, gente da cidade, e um compromisso público com a saúde da comunidade. <span class="pending">[COLAR ano de fundação / marca da água / registro]</span></p>
+          <p>Somos uma revenda de água mineral em Apucarana que trata cada entrega como parte de algo maior. Atendimento direto, gente da cidade e um compromisso público com a saúde da comunidade. <span class="pending">[COLAR ano de fundação / marca da água / registro]</span></p>
         </div>
         <span class="pin"><svg aria-hidden="true"><use href="#i-pin"/></svg>Apucarana — PR · <span class="pending">[COLAR endereço/bairros atendidos]</span></span>
       </div>
-      <div class="card quote reveal">
+      <div class="card quote reveal" data-tilt>
         <blockquote>“<mark>Percentagem</mark> da água vendida volta para a <mark>saúde</mark>.”</blockquote>
         <cite>— O compromisso da Água Saúde</cite>
       </div>
@@ -472,12 +503,12 @@ section{position:relative}
   </div>
 </section>
 
-<!-- 04 CTA FINAL -->
+<!-- 05 CTA FINAL -->
 <section class="final" id="pedir" aria-labelledby="h-final">
   <div class="wrap">
     <div class="final-card reveal">
       <canvas id="finalWater" aria-hidden="true"></canvas>
-      <span class="idx">04 · Seu próximo galão</span>
+      <span class="idx">Seu próximo galão</span>
       <h2 id="h-final"><span class="liquid" data-level="0.9" data-trigger="view"><span class="ghost">Encha o copo.</span><span class="water" aria-hidden="true">Encha o copo.</span></span><br>Encha a cidade.</h2>
       <p>Você vai comprar água esta semana de qualquer jeito. Faça essa compra cuidar de alguém. Peça agora e receba em casa.</p>
       <a class="btn-wa lg" href="https://wa.me/+554391839563?text=Beba%20Sa%C3%BAde" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-wa"/></svg>Beba Saúde</a>
@@ -487,24 +518,23 @@ section{position:relative}
 </section>
 </main>
 
-<!-- FOOTER -->
 <footer class="foot">
   <div class="wrap">
     <div class="foot-grid">
       <div>
         <a href="#topo" class="brand" aria-label="Água Saúde — voltar ao topo">
-          <img src="https://i.imgur.com/YU6ncaE.png" alt="Água Saúde" width="140" height="44" loading="lazy" onerror="this.parentNode.classList.add('no-logo')">
-          <span class="wordmark">Água <b style="color:var(--secondary)">Saúde</b></span>
+          <svg class="mark" aria-hidden="true"><use href="#i-mark"/></svg>
+          <span class="wordmark">Água <b>Saúde</b></span>
         </a>
-        <p>Beba saúde. Devolva saúde. Água mineral em Apucarana com parte de cada venda destinada à saúde.</p>
+        <p>Beba saúde. Devolva saúde. Água mineral em Apucarana com parte do lucro de cada venda destinada à saúde.</p>
       </div>
       <div>
         <h4>Navegar</h4>
         <ul>
-          <li><a href="#galeria">Galeria</a></li>
           <li><a href="#proposito">Propósito</a></li>
+          <li><a href="#fotos">Fotos</a></li>
+          <li><a href="#solucao">Por que nós</a></li>
           <li><a href="#sobre">Sobre</a></li>
-          <li><a href="#pedir">Pedir</a></li>
         </ul>
       </div>
       <div>
@@ -526,43 +556,119 @@ section{position:relative}
 <a class="fab" href="https://wa.me/+554391839563?text=Beba%20Sa%C3%BAde" target="_blank" rel="noopener" aria-label="Pedir pelo WhatsApp"><svg aria-hidden="true"><use href="#i-wa"/></svg></a>
 
 <script>
+/* =====================================================================
+   CONFIG — troque aqui. Use LINKS DIRETOS de imagem (i.imgur.com/XXXX.png),
+   não links de álbum (imgur.com/a/...). PNG com fundo transparente = melhor 3D.
+   ===================================================================== */
+const CONFIG = {
+  LOGO_URL:   "",  // [COLAR link direto da logomarca completa]  ex.: https://i.imgur.com/XXXXXXX.png
+  SYMBOL_URL: "",  // [COLAR link direto só do símbolo da logo] — usado no cursor do mouse
+  PHOTOS: [        // [COLAR links diretos das fotos] — quantas quiser (ideal 6 a 10)
+    { src: "", alt: "Foto 1 da Água Saúde" },
+    { src: "", alt: "Foto 2 da Água Saúde" },
+    { src: "", alt: "Foto 3 da Água Saúde" },
+    { src: "", alt: "Foto 4 da Água Saúde" },
+    { src: "", alt: "Foto 5 da Água Saúde" },
+    { src: "", alt: "Foto 6 da Água Saúde" }
+  ]
+};
+
 (() => {
   "use strict";
-  const RM = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const FINE = matchMedia("(pointer: fine)").matches;
   const $ = (s, c = document) => c.querySelector(s);
   const $$ = (s, c = document) => [...c.querySelectorAll(s)];
-  const DPR = Math.min(window.devicePixelRatio || 1, 2);
+  const DPR = Math.min(devicePixelRatio || 1, 2);
+  const ease = t => 1 - Math.pow(1 - t, 3);
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   $("#yr").textContent = new Date().getFullYear();
 
-  /* ---------- Galeria (Instagram embeds, lazy) ---------- */
-  const POSTS = ["DZnmfk-AU3O","DUyeI2dAWB4","DUvJ2nLgO-T","DUiRB8_gN1u","DUYFKO2FTHX","DUdSlMAlcfY","DTqMuKElUvx"];
-  const rail = $("#rail");
-  rail.innerHTML = POSTS.map((id, i) => `
-    <article class="post">
-      <div class="frame">
-        <div class="ph"><div><svg aria-hidden="true"><use href="#i-drop"/></svg>Carregando post ${i + 1}…<br><small>[COLAR imagem ${i + 1} se o embed não abrir]</small></div></div>
-        <iframe data-src="https://www.instagram.com/p/${id}/embed/" title="Post ${i + 1} da Água Saúde no Instagram" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" scrolling="no"></iframe>
-      </div>
-      <footer><span>Post ${String(i + 1).padStart(2, "0")}</span><a href="https://www.instagram.com/p/${id}/" target="_blank" rel="noopener">Ver no Instagram <svg width="14" height="14" aria-hidden="true"><use href="#i-ext"/></svg></a></footer>
-    </article>`).join("");
-  const loadFrame = f => { if (!f.src && f.dataset.src) f.src = f.dataset.src; };
-  if ("IntersectionObserver" in window) {
-    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { loadFrame(e.target); io.unobserve(e.target); } }), { root: null, rootMargin: "200px 400px" });
-    $$("iframe[data-src]", rail).forEach(f => io.observe(f));
-  } else $$("iframe[data-src]", rail).forEach(loadFrame);
-  $$("[data-rail]").forEach(b => b.addEventListener("click", () => {
-    const card = rail.querySelector(".post");
-    const step = card ? card.getBoundingClientRect().width + 18 : 320;
-    rail.scrollBy({ left: step * Number(b.dataset.rail), behavior: RM ? "auto" : "smooth" });
+  /* ---------- Logo real (nav/rodapé) ---------- */
+  const tryImg = (url, ok) => { if (!url) return; const im = new Image(); im.onload = () => ok(url); im.src = url; };
+  tryImg(CONFIG.LOGO_URL, url => $$(".brand").forEach(b => {
+    const im = document.createElement("img");
+    im.className = "logo-img"; im.src = url; im.alt = "Água Saúde"; im.height = 40;
+    b.prepend(im); b.classList.add("has-logo");
   }));
+
+  /* ---------- LOGO 3D ---------- */
+  const logo = $("#logo3d"), stage = $("#stage");
+  const LAYERS = RM ? 1 : 18;
+  const markSVG = '<svg viewBox="0 0 64 64"><use href="#i-mark"/></svg>';
+  const buildLogo = url => {
+    const inner = url ? `<img src="${url}" alt="" draggable="false">` : markSVG;
+    let html = "";
+    for (let i = LAYERS - 1; i >= 0; i--) html += `<div class="layer${i ? " depth" : ""}" style="transform:translateZ(${-i * 1.6}px)">${inner}</div>`;
+    logo.innerHTML = html;
+    if (url) { logo.style.setProperty("--mask", `url("${url}")`); logo.insertAdjacentHTML("beforeend", '<div class="glare"></div>'); }
+  };
+  buildLogo("");
+  tryImg(CONFIG.LOGO_URL, buildLogo);
+
+  const L3 = { rx: 0, ry: 0, tx: 0, ty: 0, drag: false, lastX: 0, spin: 0, vel: 0, born: performance.now() };
+  stage.addEventListener("pointermove", e => {
+    const r = stage.getBoundingClientRect();
+    const nx = (e.clientX - r.left) / r.width - .5, ny = (e.clientY - r.top) / r.height - .5;
+    if (L3.drag) { const dx = e.clientX - L3.lastX; L3.spin += dx * .6; L3.vel = dx * .6; L3.lastX = e.clientX; }
+    L3.tx = -ny * 26; L3.ty = nx * 34;
+    logo.style.setProperty("--gx", (nx + .5) * 100 + "%"); logo.style.setProperty("--gy", (ny + .5) * 100 + "%");
+  });
+  stage.addEventListener("pointerleave", () => { L3.tx = 0; L3.ty = 0; L3.drag = false; });
+  stage.addEventListener("pointerdown", e => { L3.drag = true; L3.lastX = e.clientX; stage.setPointerCapture?.(e.pointerId); });
+  stage.addEventListener("pointerup", () => L3.drag = false);
+  const drawLogo = (now, t) => {
+    const intro = ease(clamp((now - L3.born - 300) / 1800, 0, 1));
+    if (!L3.drag) { L3.spin += L3.vel; L3.vel *= .94; }
+    L3.rx += (L3.tx - L3.rx) * .08; L3.ry += (L3.ty - L3.ry) * .08;
+    const idle = Math.sin(t * .9) * 10, bob = Math.sin(t * 1.3) * 8;
+    const ry = (1 - intro) * -200 + L3.ry + idle + L3.spin;
+    logo.style.transform = `translateY(${bob - (1 - intro) * 60}px) rotateX(${L3.rx + Math.sin(t * .7) * 4}deg) rotateY(${ry}deg) scale(${.6 + intro * .4})`;
+    logo.style.opacity = intro;
+  };
+  if (RM) { logo.style.transform = "none"; }
+
+  /* Poça: gota cai do logo e gera ondas */
+  const pool = $("#pool"); let pctx, rings = [], drops = [], nextDrip = 1.8;
+  const fit = cv => { const r = cv.getBoundingClientRect(); cv.width = Math.max(1, r.width * DPR); cv.height = Math.max(1, r.height * DPR); return cv.getContext("2d"); };
+  pctx = fit(pool);
+  const splashPool = x => { for (let k = 0; k < 3; k++) rings.push({ x, r: k * 10 * DPR, a: .8 - k * .15 }); };
+  stage.addEventListener("click", e => { const r = pool.getBoundingClientRect(); splashPool((e.clientX - r.left) * DPR); });
+  const drawPool = t => {
+    const w = pool.width, h = pool.height, cy = h * .55;
+    pctx.clearRect(0, 0, w, h);
+    const g = pctx.createRadialGradient(w / 2, cy, 0, w / 2, cy, w * .45);
+    g.addColorStop(0, "rgba(0,191,255,.30)"); g.addColorStop(1, "rgba(0,191,255,0)");
+    pctx.fillStyle = g; pctx.beginPath(); pctx.ellipse(w / 2, cy, w * .45, h * .32, 0, 0, 6.283); pctx.fill();
+    if (t > nextDrip) { drops.push({ x: w / 2 + (Math.random() - .5) * w * .1, y: -10 * DPR, v: 0 }); nextDrip = t + 2.6 + Math.random() * 1.6; }
+    drops = drops.filter(d => { d.v += .5 * DPR; d.y += d.v; if (d.y >= cy) { splashPool(d.x); return false; }
+      pctx.beginPath(); pctx.ellipse(d.x, d.y, 3.5 * DPR, 5 * DPR, 0, 0, 6.283); pctx.fillStyle = "#0400ff"; pctx.fill(); return true; });
+    rings = rings.filter(r => r.a > .02);
+    rings.forEach(r => { r.r += 1.3 * DPR; r.a *= .975;
+      pctx.beginPath(); pctx.ellipse(r.x, cy, r.r, r.r * .28, 0, 0, 6.283);
+      pctx.strokeStyle = `rgba(4,0,255,${r.a * .6})`; pctx.lineWidth = 1.6 * DPR; pctx.stroke(); });
+  };
+
+  /* ---------- Cursor = símbolo da marca ---------- */
+  const cur = $("#cursor");
+  if (FINE && !RM) {
+    document.documentElement.classList.add("has-cursor");
+    tryImg(CONFIG.SYMBOL_URL || "", url => cur.innerHTML = `<img src="${url}" alt="">`);
+    let cx = innerWidth / 2, cy = innerHeight / 2, x = cx, y = cy, rot = 0;
+    addEventListener("pointermove", e => { cx = e.clientX; cy = e.clientY; cur.classList.add("on");
+      cur.classList.toggle("hot", !!e.target.closest("a,button,[data-tilt],.pcard,.stage")); }, { passive: true });
+    document.addEventListener("pointerleave", () => cur.classList.remove("on"));
+    addEventListener("pointerdown", e => { const s = document.createElement("span"); s.className = "splash"; s.style.left = e.clientX + "px"; s.style.top = e.clientY + "px"; document.body.appendChild(s); setTimeout(() => s.remove(), 700); });
+    const loopC = () => { const dx = cx - x; x += dx * .22; y += (cy - y) * .22; rot += (clamp(dx * .8, -25, 25) - rot) * .15;
+      cur.style.transform = `translate3d(${x}px,${y}px,0) rotate(${rot}deg)`; requestAnimationFrame(loopC); };
+    requestAnimationFrame(loopC);
+  } else cur.remove();
 
   /* ---------- Menu mobile ---------- */
   const burger = $(".burger"), menu = $("#menu-mobile");
   const setMenu = open => {
-    burger.setAttribute("aria-expanded", open);
-    burger.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
-    menu.classList.toggle("open", open);
-    menu.setAttribute("aria-hidden", !open);
+    burger.setAttribute("aria-expanded", open); burger.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
+    menu.classList.toggle("open", open); menu.setAttribute("aria-hidden", !open);
     document.body.style.overflow = open ? "hidden" : "";
     if (open) setTimeout(() => menu.querySelector("a").focus(), 200);
   };
@@ -576,174 +682,159 @@ section{position:relative}
     $$(".reveal").forEach((el, i) => { el.style.transitionDelay = (i % 3) * 90 + "ms"; ro.observe(el); });
   } else $$(".reveal").forEach(el => el.classList.add("in"));
   const fab = $(".fab"), hero = $(".hero");
-  if ("IntersectionObserver" in window) new IntersectionObserver(([e]) => fab.classList.toggle("show", !e.isIntersecting), { threshold: .05 }).observe(hero);
+  new IntersectionObserver(([e]) => fab.classList.toggle("show", !e.isIntersecting), { threshold: .05 }).observe(hero);
+
+  /* ---------- Tilt 3D nos cards ---------- */
+  if (FINE && !RM) $$("[data-tilt]").forEach(c => {
+    c.addEventListener("pointermove", e => { const r = c.getBoundingClientRect();
+      const nx = (e.clientX - r.left) / r.width - .5, ny = (e.clientY - r.top) / r.height - .5;
+      c.style.transform = `perspective(900px) rotateX(${-ny * 7}deg) rotateY(${nx * 9}deg) translateZ(6px)`; });
+    c.addEventListener("pointerleave", () => c.style.transform = "");
+  });
 
   /* ---------- Palavras rotativas ---------- */
-  const typed = $(".typed");
-  const words = JSON.parse(typed.dataset.words);
+  const typed = $(".typed"), words = JSON.parse(typed.dataset.words);
   if (!RM) {
     let w = 0, c = words[0].length, del = true;
-    const tick = () => {
-      const word = words[w];
-      c += del ? -1 : 1;
-      typed.textContent = word.slice(0, c);
+    const tick = () => { const word = words[w]; c += del ? -1 : 1; typed.textContent = word.slice(0, c);
       let wait = del ? 45 : 85;
-      if (!del && c === word.length) { del = true; wait = 1900; }
-      else if (del && c === 0) { del = false; w = (w + 1) % words.length; wait = 300; }
-      setTimeout(tick, wait);
-    };
+      if (!del && c === word.length) { del = true; wait = 1900; } else if (del && c === 0) { del = false; w = (w + 1) % words.length; wait = 300; }
+      setTimeout(tick, wait); };
     setTimeout(tick, 2600);
   } else typed.textContent = words.join(" · ");
 
-  /* ---------- ASSINATURA: texto que enche de água ---------- */
-  const ease = t => 1 - Math.pow(1 - t, 3);
-  const liquids = $$(".liquid").map(el => ({
-    el, water: $(".water", el),
-    target: parseFloat(el.dataset.level || .8),
-    delay: parseFloat(el.dataset.delay || 0),
-    start: el.dataset.trigger === "view" ? null : 0,
-    level: 0, amp: 1, hover: 0, visible: true
-  }));
-  liquids.forEach(L => {
-    L.el.addEventListener("pointerenter", () => L.hover = 1);
-    L.el.addEventListener("pointerleave", () => L.hover = 0);
-    if ("IntersectionObserver" in window) new IntersectionObserver(([e]) => {
-      L.visible = e.isIntersecting;
-      if (e.isIntersecting && L.start === null) L.start = performance.now();
-    }, { threshold: .3 }).observe(L.el);
-  });
-  const clipFor = (level, t, amp, phase) => {
-    const top = (1 - level) * 100, pts = [];
-    for (let x = 0; x <= 100; x += 4) {
-      const y = top + Math.sin(x * 0.11 + t * 2.2 + phase) * 3.2 * amp + Math.sin(x * 0.05 - t * 1.3) * 1.6 * amp;
-      pts.push(`${x}% ${Math.max(-6, y).toFixed(2)}%`);
-    }
-    return `polygon(0% 100%, ${pts.join(",")}, 100% 100%)`;
+  /* ---------- Manifesto palavra por palavra + fluxo do lucro (scroll) ---------- */
+  const man = $(".manifesto");
+  const HL = ["lucro", "saúde"];
+  man.innerHTML = man.textContent.trim().split(/\s+/).map(w => `<span class="w${HL.some(h => w.toLowerCase().includes(h)) ? " hl" : ""}">${w}</span>`).join(" ");
+  const mws = $$(".w", man), flow = $("#flow"), pipe = $(".pipe", flow), stations = $$(".station", flow);
+  const onScroll = () => {
+    const vh = innerHeight;
+    const mr = man.getBoundingClientRect();
+    const mp = RM ? 1 : clamp((vh * .85 - mr.top) / (mr.height + vh * .35), 0, 1);
+    mws.forEach((w, i) => w.classList.toggle("lit", i / mws.length < mp));
+    const fr = flow.getBoundingClientRect();
+    const fp = RM ? 1 : clamp((vh * .8 - fr.top) / (fr.height * .9), 0, 1);
+    pipe.style.setProperty("--p", fp);
+    stations.forEach(s => s.classList.toggle("on", fp >= parseFloat(s.dataset.at)));
   };
+  addEventListener("scroll", onScroll, { passive: true }); onScroll();
+
+  /* ---------- FOTOS 3D: carrossel cilíndrico ---------- */
+  const ring = $("#ring"), rs = $("#ringStage"), out = $("#ringOut");
+  const P = CONFIG.PHOTOS, N = P.length, STEP = 360 / N;
+  ring.innerHTML = P.map((p, i) => `
+    <button class="pcard" type="button" data-i="${i}" aria-label="${p.alt} (${i + 1} de ${N})">
+      ${p.src ? `<img src="${p.src}" alt="${p.alt}" loading="lazy" decoding="async">`
+              : `<span class="ph"><span><svg aria-hidden="true"><use href="#i-image"/></svg>[COLAR FOTO ${i + 1}]<br><small>link direto em CONFIG.PHOTOS</small></span></span>`}
+      <span class="shine" aria-hidden="true"></span><span class="num">${String(i + 1).padStart(2, "0")}</span>
+    </button>`).join("");
+  const cards = $$(".pcard", ring);
+  const R = { a: 0, target: 0, drag: false, lastX: 0, vel: 0, idle: 0, radius: 0, cw: 260 };
+  const layoutRing = () => {
+    R.cw = clamp(rs.clientWidth * .24, 170, 270);
+    rs.style.setProperty("--cw", R.cw + "px");
+    R.radius = Math.round((R.cw / 2) / Math.tan(Math.PI / N) + R.cw * .28);
+    cards.forEach((c, i) => c.style.transform = `rotateY(${i * STEP}deg) translateZ(${R.radius}px)`);
+  };
+  layoutRing();
+  const frontIndex = () => ((Math.round(-R.a / STEP) % N) + N) % N;
+  const goTo = d => { R.target = Math.round(R.target / STEP) * STEP - d * STEP; R.idle = performance.now() + 4000; };
+  $("#ringPrev").addEventListener("click", () => goTo(-1));
+  $("#ringNext").addEventListener("click", () => goTo(1));
+  rs.addEventListener("keydown", e => { if (e.key === "ArrowRight") { goTo(1); e.preventDefault(); } if (e.key === "ArrowLeft") { goTo(-1); e.preventDefault(); } });
+  cards.forEach(c => c.addEventListener("click", () => {
+    if (R.moved) return;
+    const i = +c.dataset.i, cur = frontIndex(); let d = i - cur;
+    if (d > N / 2) d -= N; if (d < -N / 2) d += N; goTo(d);
+  }));
+  rs.addEventListener("pointerdown", e => { R.drag = true; R.moved = false; R.lastX = e.clientX; R.vel = 0; });
+  addEventListener("pointermove", e => { if (!R.drag) return; const dx = e.clientX - R.lastX; if (Math.abs(dx) > 2) R.moved = true;
+    R.target += dx * .35; R.vel = dx * .35; R.lastX = e.clientX; R.idle = performance.now() + 4000; }, { passive: true });
+  addEventListener("pointerup", () => { if (!R.drag) return; R.drag = false; R.target += R.vel * 8; R.target = Math.round(R.target / STEP) * STEP; setTimeout(() => R.moved = false, 50); });
+  let lastFront = -1;
+  const drawRing = now => {
+    if (!RM && !R.drag && now > R.idle) R.target -= .06;
+    R.a += (R.target - R.a) * (RM ? 1 : .08);
+    ring.style.transform = `translateZ(${-R.radius}px) rotateX(-6deg) rotateY(${R.a}deg)`;
+    cards.forEach((c, i) => {
+      const ang = ((i * STEP + R.a) % 360 + 540) % 360 - 180;
+      const f = Math.cos(ang * Math.PI / 180);
+      c.style.opacity = f < .05 ? 0 : (.25 + .75 * f).toFixed(3);
+      c.style.pointerEvents = f < .2 ? "none" : "";
+      c.style.setProperty("--sx", (120 - (ang + 180) / 360 * 140) + "%");
+      c.tabIndex = Math.abs(ang) < STEP / 2 ? 0 : -1;
+    });
+    const fi = frontIndex();
+    if (fi !== lastFront) { lastFront = fi; out.textContent = `${fi + 1} / ${N}`; }
+  };
+
+  /* ---------- Texto que enche de água ---------- */
+  const liquids = $$(".liquid").map(el => ({ el, water: $(".water", el), target: parseFloat(el.dataset.level || .8),
+    delay: parseFloat(el.dataset.delay || 0), start: el.dataset.trigger === "view" ? null : 0, amp: 1, hover: 0, visible: true }));
+  liquids.forEach(L => {
+    L.el.addEventListener("pointerenter", () => L.hover = 1); L.el.addEventListener("pointerleave", () => L.hover = 0);
+    new IntersectionObserver(([e]) => { L.visible = e.isIntersecting; if (e.isIntersecting && L.start === null) L.start = performance.now(); }, { threshold: .3 }).observe(L.el);
+  });
+  const clipFor = (level, t, amp) => { const top = (1 - level) * 100, pts = [];
+    for (let x = 0; x <= 100; x += 4) { const y = top + Math.sin(x * .11 + t * 2.2) * 3.2 * amp + Math.sin(x * .05 - t * 1.3) * 1.6 * amp; pts.push(`${x}% ${Math.max(-6, y).toFixed(2)}%`); }
+    return `polygon(0% 100%, ${pts.join(",")}, 100% 100%)`; };
   if (RM) liquids.forEach(L => L.water.style.clipPath = `inset(${(1 - L.target) * 100}% 0 0 0)`);
 
-  /* ---------- Canvas helpers ---------- */
-  const fit = cv => {
-    const r = cv.getBoundingClientRect();
-    cv.width = Math.max(1, r.width * DPR); cv.height = Math.max(1, r.height * DPR);
-    return cv.getContext("2d");
-  };
-  const waveFill = (ctx, w, h, level, t, colors, amp = 10) => {
-    ctx.clearRect(0, 0, w, h);
-    const layers = [{ a: amp * DPR, f: .012 / DPR, s: 1.4, o: .45 }, { a: amp * .7 * DPR, f: .018 / DPR, s: -1.1, o: 1 }];
-    layers.forEach((L, i) => {
-      const y0 = h * (1 - level) + i * 6 * DPR;
-      ctx.beginPath(); ctx.moveTo(0, h);
-      for (let x = 0; x <= w; x += 6 * DPR) ctx.lineTo(x, y0 + Math.sin(x * L.f + t * L.s) * L.a);
-      ctx.lineTo(w, h); ctx.closePath();
-      const g = ctx.createLinearGradient(0, y0, 0, h);
-      g.addColorStop(0, colors[0]); g.addColorStop(1, colors[1]);
-      ctx.globalAlpha = L.o; ctx.fillStyle = g; ctx.fill();
-    });
-    ctx.globalAlpha = 1;
-  };
-
-  /* Hero: bolhas + ondulações do cursor */
-  const bc = $("#bubbles");
-  let bctx = fit(bc), bubbles = [], ripples = [];
-  const seed = () => {
-    const n = Math.round(Math.min(46, bc.width / DPR / 26));
-    bubbles = Array.from({ length: n }, () => ({ x: Math.random() * bc.width, y: Math.random() * bc.height, r: (2 + Math.random() * 9) * DPR, v: (.25 + Math.random() * .7) * DPR, w: Math.random() * 6.28 }));
-  };
+  /* ---------- Canvas: bolhas do hero + água do CTA ---------- */
+  const bc = $("#bubbles"); let bctx = fit(bc), bubbles = [], ripples = [];
+  const seed = () => { const n = Math.round(Math.min(46, bc.width / DPR / 26));
+    bubbles = Array.from({ length: n }, () => ({ x: Math.random() * bc.width, y: Math.random() * bc.height, r: (2 + Math.random() * 9) * DPR, v: (.25 + Math.random() * .7) * DPR, w: Math.random() * 6.28 })); };
   seed();
-  hero.addEventListener("pointermove", e => {
-    if (RM || Math.random() > .18) return;
-    const r = bc.getBoundingClientRect();
-    ripples.push({ x: (e.clientX - r.left) * DPR, y: (e.clientY - r.top) * DPR, r: 0, a: .5 });
-  }, { passive: true });
-  hero.addEventListener("pointerdown", e => {
-    if (RM) return;
-    const r = bc.getBoundingClientRect();
-    for (let k = 0; k < 3; k++) ripples.push({ x: (e.clientX - r.left) * DPR, y: (e.clientY - r.top) * DPR, r: k * 14 * DPR, a: .7 });
-  });
-  const drawBubbles = t => {
-    const w = bc.width, h = bc.height;
-    bctx.clearRect(0, 0, w, h);
-    const g = bctx.createRadialGradient(w * .85, h * .1, 0, w * .85, h * .1, w * .7);
-    g.addColorStop(0, "rgba(0,191,255,.10)"); g.addColorStop(1, "rgba(0,191,255,0)");
-    bctx.fillStyle = g; bctx.fillRect(0, 0, w, h);
-    bubbles.forEach(b => {
-      b.y -= b.v; b.w += .02;
-      if (b.y < -20) { b.y = h + 20; b.x = Math.random() * w; }
+  hero.addEventListener("pointermove", e => { if (RM || Math.random() > .18) return; const r = bc.getBoundingClientRect();
+    ripples.push({ x: (e.clientX - r.left) * DPR, y: (e.clientY - r.top) * DPR, r: 0, a: .5 }); }, { passive: true });
+  const drawBubbles = () => { const w = bc.width, h = bc.height; bctx.clearRect(0, 0, w, h);
+    const g = bctx.createRadialGradient(w * .8, h * .3, 0, w * .8, h * .3, w * .6);
+    g.addColorStop(0, "rgba(0,191,255,.12)"); g.addColorStop(1, "rgba(0,191,255,0)"); bctx.fillStyle = g; bctx.fillRect(0, 0, w, h);
+    bubbles.forEach(b => { if (!RM) { b.y -= b.v; b.w += .02; } if (b.y < -20) { b.y = h + 20; b.x = Math.random() * w; }
       const x = b.x + Math.sin(b.w) * 8 * DPR;
-      bctx.beginPath(); bctx.arc(x, b.y, b.r, 0, 6.283);
-      bctx.strokeStyle = "rgba(4,0,255,.13)"; bctx.lineWidth = 1.2 * DPR; bctx.stroke();
-      bctx.beginPath(); bctx.arc(x - b.r * .35, b.y - b.r * .35, b.r * .22, 0, 6.283);
-      bctx.fillStyle = "rgba(0,191,255,.35)"; bctx.fill();
-    });
+      bctx.beginPath(); bctx.arc(x, b.y, b.r, 0, 6.283); bctx.strokeStyle = "rgba(4,0,255,.13)"; bctx.lineWidth = 1.2 * DPR; bctx.stroke();
+      bctx.beginPath(); bctx.arc(x - b.r * .35, b.y - b.r * .35, b.r * .22, 0, 6.283); bctx.fillStyle = "rgba(0,191,255,.35)"; bctx.fill(); });
     ripples = ripples.filter(r => r.a > .01);
-    ripples.forEach(r => {
-      r.r += 2.2 * DPR; r.a *= .955;
-      bctx.beginPath(); bctx.ellipse(r.x, r.y, r.r, r.r * .55, 0, 0, 6.283);
-      bctx.strokeStyle = `rgba(0,191,255,${r.a})`; bctx.lineWidth = 1.5 * DPR; bctx.stroke();
-    });
-  };
+    ripples.forEach(r => { r.r += 2.2 * DPR; r.a *= .955; bctx.beginPath(); bctx.ellipse(r.x, r.y, r.r, r.r * .55, 0, 0, 6.283);
+      bctx.strokeStyle = `rgba(0,191,255,${r.a})`; bctx.lineWidth = 1.5 * DPR; bctx.stroke(); }); };
+  const fw = $("#finalWater"); let fctx = fit(fw), fwStart = null;
+  const waveFill = (ctx, w, h, level, t, colors, amp) => { ctx.clearRect(0, 0, w, h);
+    [{ a: amp * DPR, f: .012 / DPR, s: 1.4, o: .45 }, { a: amp * .7 * DPR, f: .018 / DPR, s: -1.1, o: 1 }].forEach((L, i) => {
+      const y0 = h * (1 - level) + i * 6 * DPR; ctx.beginPath(); ctx.moveTo(0, h);
+      for (let x = 0; x <= w; x += 6 * DPR) ctx.lineTo(x, y0 + Math.sin(x * L.f + t * L.s) * L.a);
+      ctx.lineTo(w, h); ctx.closePath(); const g = ctx.createLinearGradient(0, y0, 0, h);
+      g.addColorStop(0, colors[0]); g.addColorStop(1, colors[1]); ctx.globalAlpha = L.o; ctx.fillStyle = g; ctx.fill(); });
+    ctx.globalAlpha = 1; };
 
-  /* Medidor do galão */
-  const tank = $("#tank"); let tctx = fit(tank);
-  /* Orbe da solução */
-  const orb = $("#orb"); let octx = fit(orb);
-  /* CTA final */
-  const fw = $("#finalWater"); let fctx = fit(fw);
+  const vis = new Map([[hero, true], [fw, false], [rs, false]]);
+  const vo = new IntersectionObserver(es => es.forEach(e => vis.set(e.target, e.isIntersecting)));
+  vis.forEach((_, el) => vo.observe(el));
 
-  const vis = new Map([[hero, true], [tank, true], [orb, false], [fw, false]]);
-  if ("IntersectionObserver" in window) {
-    const vo = new IntersectionObserver(es => es.forEach(e => vis.set(e.target, e.isIntersecting)));
-    vis.forEach((_, el) => vo.observe(el));
+  let rt;
+  addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { bctx = fit(bc); seed(); pctx = fit(pool); fctx = fit(fw); layoutRing(); if (RM) staticFrame(); }, 150); });
+
+  let t0 = performance.now();
+  function staticFrame() {
+    drawBubbles(); drawPool(0); drawRing(0);
+    waveFill(fctx, fw.width, fw.height, .32, 0, ["rgba(0,191,255,.12)", "rgba(4,0,255,.10)"], 14);
   }
-
-  let resizeT;
-  window.addEventListener("resize", () => {
-    clearTimeout(resizeT);
-    resizeT = setTimeout(() => { bctx = fit(bc); seed(); tctx = fit(tank); octx = fit(orb); fctx = fit(fw); if (RM) staticFrame(); }, 150);
-  });
-
-  let t0 = performance.now(), fwStart = null;
-  const staticFrame = () => {
-    drawBubbles(0);
-    waveFill(tctx, tank.width, tank.height, .72, 0, ["#00bfff", "#0400ff"], 6);
-    waveFill(octx, orb.width, orb.height, .6, 0, ["rgba(0,191,255,.9)", "rgba(255,255,255,.35)"], 8);
-    waveFill(fctx, fw.width, fw.height, .32, 0, ["rgba(0,191,255,.10)", "rgba(4,0,255,.10)"], 14);
-  };
-
   const frame = now => {
-    const t = (now - t0) / 1000;
-    if (document.hidden) { requestAnimationFrame(frame); return; }
-    if (vis.get(hero)) drawBubbles(t);
-    if (vis.get(tank)) {
-      const p = ease(Math.min(1, Math.max(0, (now - t0 - 700) / 2200)));
-      waveFill(tctx, tank.width, tank.height, .08 + p * .64, t, ["#00bfff", "#0400ff"], 6 + (1 - p) * 8);
-    }
-    if (vis.get(orb)) {
-      octx.save();
-      waveFill(octx, orb.width, orb.height, .58 + Math.sin(t * .6) * .04, t * 1.2, ["rgba(0,191,255,.95)", "rgba(255,255,255,.4)"], 9);
-      octx.restore();
-    }
-    if (vis.get(fw)) {
-      if (fwStart === null) fwStart = now;
-      const p = ease(Math.min(1, (now - fwStart) / 2600));
-      waveFill(fctx, fw.width, fw.height, p * .34, t * .9, ["rgba(0,191,255,.14)", "rgba(4,0,255,.12)"], 16);
-    }
-    liquids.forEach(L => {
-      if (L.start === null || !L.visible) return;
-      const p = ease(Math.min(1, Math.max(0, (now - (L.start || t0) - L.delay) / 2400)));
-      L.amp += ((L.hover ? 2.2 : 1 - p * .5) - L.amp) * .06;
-      L.water.style.clipPath = clipFor(p * L.target, t, L.amp, 0);
-    });
     requestAnimationFrame(frame);
+    if (document.hidden) return;
+    const t = (now - t0) / 1000;
+    if (vis.get(hero)) { drawBubbles(); drawLogo(now, t); drawPool(t); }
+    if (vis.get(rs)) drawRing(now);
+    if (vis.get(fw)) { if (fwStart === null) fwStart = now;
+      waveFill(fctx, fw.width, fw.height, ease(Math.min(1, (now - fwStart) / 2600)) * .34, t * .9, ["rgba(0,191,255,.14)", "rgba(4,0,255,.12)"], 16); }
+    liquids.forEach(L => { if (L.start === null || !L.visible) return;
+      const p = ease(clamp((now - (L.start || t0) - L.delay) / 2400, 0, 1));
+      L.amp += ((L.hover ? 2.2 : 1 - p * .5) - L.amp) * .06; L.water.style.clipPath = clipFor(p * L.target, t, L.amp); });
   };
-
-  const start = () => {
-    document.documentElement.classList.add("loaded");
-    t0 = performance.now();
-    if (RM) staticFrame(); else requestAnimationFrame(frame);
-  };
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(start); else window.addEventListener("load", start);
+  const start = () => { document.documentElement.classList.add("loaded"); t0 = performance.now(); L3.born = t0;
+    if (RM) { staticFrame(); rs.addEventListener("click", () => setTimeout(staticFrame, 0)); $("#ringPrev").addEventListener("click", () => setTimeout(staticFrame, 0)); $("#ringNext").addEventListener("click", () => setTimeout(staticFrame, 0)); }
+    else requestAnimationFrame(frame); };
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(start);
 })();
 </script>
 </body>
